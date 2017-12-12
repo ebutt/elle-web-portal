@@ -1,0 +1,340 @@
+<% include partials/common/drop1beforeTitle %>
+  <title>Create a New Language</title>
+<% include partials/tables/includes/drop1simpleTableIncludes %>
+  <link rel="stylesheet" href="../stylesheets/language/createLang.css">
+  <link rel="stylesheet" href="../assets/css/jquery.typeahead.min.css">
+  <script src="../assets/js/vindicate.js"></script>
+  <script src="../assets/js/jquery.typeahead.min.js" type="text/javascript"></script>
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+  <div class="container pageContent">
+
+    <div class = "content-table">
+      <h2 class="titleHeader">Create a New Language Pack</h2>
+      <div class="text-center">
+        <a href="/languages" class="returnLink">Return to Language Menu</a>
+      </div>
+      <hr>
+      <h4 class="pageDescription">Unsure what's out there? Search for it!</h4>
+      <div class="bigAccordionTab">
+        <input id="bigTab-select-one" type="checkbox" name="bigTab-select" class="tabInput">
+        <label for="bigTab-select-one" class="bigAccordionTabLabel selectLabel">Search</label>
+        <div class="bigAccordionTab-content">
+          <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+              <ul id="tabs" class="nav nav-tabs" role="tablist">
+                <li class="nav-item quick-select">
+                  <a class="nav-link active" data-toggle="tab" href="#quickSelect" role="tab">Quick Select</a>
+                </li>
+                <li class="nav-item table-select">
+                  <a class="nav-link" data-toggle="tab" href="#tableSelect" role="tab">Table Select</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div id="my-tab-content" class="tab-content">
+      
+            <div class="tab-pane active text-center" id="quickSelect" role="tabpanel">
+              <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+                <form id="form-langSearch" name="form-langSearch">
+                  <div class="typeahead__container">
+                    <div class="typeahead__field">
+                      <span class="typeahead__query">
+                          <input class="js-typeahead-langSearch" name="langSearch[query]" type="search" placeholder="Search" autocomplete="off">
+                      </span>
+                      <span class="typeahead__button">
+                          <button type="submit" id="typeaheadSubmitButton">
+                              <i class="typeahead__search-icon"></i>
+                          </button>
+                      </span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="tab-pane" id="tableSelect" role="tabpanel">
+              <% include partials/tables/html/searchAllLanguages %>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content-form">
+      <h2 class="titleHeader">Creation Settings</h2>
+      <form id="form-createLang">
+        <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+          <label for ="languageID" class="control-label">Langauge Pack Name</label>
+          <input type="text" class="form-control" id="languageID" name="languageID" placeholder="language pack name" data-vindicate="required|format:languageID">
+          <small class="form-control-feedback"></small>
+        </div>
+          
+          <div class="form-group col-10 offset-1 col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center">
+            <button type="button" id="createButton" class="btn btn-success btn-top btn-lg" disabled>Create New Pack</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Warning: Error(s)     
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="modal-static-text text-center">A Language Pack with that name already exists.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger modalBtn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <div class="pageEnder"></div>
+  <button id="quickSelectLoad" type="button" class="hide"></button>
+  
+  <div class="modal" id="createConfirm" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Language Submission Complete
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group text-center">
+              <p>Congratulations! Your Language Pack has been created.</p>
+              <p>Redirecting to the Editor now...</p> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pageEnder"></div>
+    <input id ="deselectInput" class="hide" type="text">
+
+  
+  <% include partials/common/timeoutLogin %>
+  <% include partials/common/loadGroupsModal %>
+  
+<% include partials/tables/js/searchAllLanguages %>
+<% include partials/tables/js/editPermissions %>
+<% include partials/common/drop1footer %>
+<% include partials/common/auth %>
+<script>
+
+$('#form-createLang').vindicate("init");
+var langNames = [];
+
+$(function() {
+  
+    checkToken();
+    var searchAllLanguages = $('#searchAllLanguages').DataTable();
+    var editPermissions = $('#editPermissions').DataTable();
+    
+    $('#hasToken').change(function(){
+      
+      <% include partials/common/pendingAdmin %>
+      
+      searchAllLanguages.clear().draw(false);
+      
+      var langList = new XMLHttpRequest();
+      langList.open("GET", "http://159.203.163.147/langlist", true);
+    
+      langList.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      langList.onreadystatechange = function () {
+        if(langList.readyState == XMLHttpRequest.DONE && langList.status == 200) {
+              var response = JSON.parse(langList.responseText);
+              for (var i=0; i<response.modules.length; ++i){
+                
+                var lang = response.modules[i];
+                langNames.push((lang.lang_name).toLowerCase());
+                searchAllLanguages.row.add( [ "", lang.lang_name, lang.version, lang.num_terms, lang.author]).draw(false);
+              }
+              $("#quickSelectLoad").click();
+              
+              
+              setTimeout(function() {
+                  $('.resizeButton').click();
+              }, 20)
+        }
+        else {
+          
+        }
+      }
+      langList.send(null);
+      
+      
+    });
+    
+  //  btn-group causes graphical errors when the screen gets small
+  $(".btn-group").removeClass("btn-group");
+  
+  
+  $('#languageID').keypress(function(event) {
+    if (event.keyCode == 13 || event.which == 13) {
+        event.preventDefault();
+        $('.form-group').removeClass('has-success has-warning has-danger');
+        $('#languageID').removeClass('form-control-success form-control-warning form-control-danger');
+        $("#form-createLang").vindicate("validate");
+        checkOtherInputs();
+    }
+  });
+
+    
+  function checkOtherInputs() {
+    if ( $('#languageID').hasClass('form-control-success')) {
+          $('#createButton').removeAttr('disabled');
+    }
+    else {
+      $('#createButton').attr('disabled', 'disabled');
+    }
+  };
+  
+    //  Have to auto-resize upon table-select becoming active (after DOM is loaded)
+  $(".table-select").click(function() {
+      $(document).ready(function() {
+        $('.resizeButton').click();
+      })
+  });
+  
+  $('#languageID').change(function(){
+    //  Reset the validation status and run it again
+    $('.form-group').removeClass('has-success has-warning has-danger');
+    $('#languageID').removeClass('form-control-success form-control-warning form-control-danger');
+    $("#form-createLang").vindicate("validate");
+    checkOtherInputs();
+  })
+  
+  $( "#form-createLang" ).submit(function( event ) {
+    event.preventDefault();
+    
+    var langVal = ($('#languageID').val());
+    langVal = langVal.toLowerCase();
+    
+    if (langNames.indexOf(langVal) != -1){
+      $("#errorModal").modal();
+      return;
+    }
+    else {
+      
+      var postLangJSON = {
+        'lang_name': $('#languageID').val(),
+        'version': 1
+      };
+      
+      var postLangJSONreq = JSON.stringify(postLangJSON);
+
+      var postLang = new XMLHttpRequest();
+      postLang.open("POST", "http://159.203.163.147/lang", true);
+      postLang.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      postLang.setRequestHeader("Content-Type", "application/json");
+      
+      postLang.onreadystatechange = function () {
+        if(postLang.readyState == XMLHttpRequest.DONE && postLang.status == 200) {
+            var response = JSON.parse(postLang.responseText);
+            $("#createConfirm").modal();
+            setTimeout(function(){
+              window.location = "/languages/editMenu?lang=" + langVal;
+              
+            }, 2000)
+            
+        }
+        else {
+          var response = JSON.parse(postLang.responseText);
+          if (response = "Language created successfully"){
+            $("#createConfirm").modal();
+            setTimeout(function(){
+              window.location = "/languages/editMenu?lang=" + langVal;
+              
+            }, 2000)
+          }
+
+        }
+      }
+      
+      
+    }
+    postLang.send(postLangJSONreq);
+    
+  });  //  end of create lang form
+  
+
+  $("#quickSelectLoad").click(function(){
+
+      var searchData = new Array();
+      
+      searchAllLanguages.rows().every(function(){
+        var data = (this).data();
+        searchData.push(data[1]);
+      });
+      
+      $.typeahead({
+        input: '.js-typeahead-langSearch',
+        minLength: 1,
+        maxItem: 5,
+        searchOnFocus: true,
+        dynamic: true,
+        delay: 250,
+        offset: true,
+        accent: true,
+        blueOnTab: false,
+        order: "asc",
+      
+        source: {
+            data: searchData
+          },
+          callback: {
+              onInit: function (node) {
+              }
+          }
+      });
+      
+    });
+      
+  
+  $.fn.serializeObject = function(){
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+  };
+  
+  
+  $( "#form-langSearch" ).submit(function( event ) {
+    event.preventDefault();
+    var jsonReq = JSON.stringify($('#form-langSearch').serializeObject());
+  });
+  
+  $('#createButton').click(function(){
+    $("#form-createLang").submit();
+  })
+  
+
+});
+
+
+</script>

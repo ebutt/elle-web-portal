@@ -1,0 +1,76 @@
+<script>
+$(document).ready(function() {
+    var langTable = $('#createLanguage').DataTable( {
+        "language": {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"Btp>',
+        select: true,
+        pagingType: 'numbers',
+        lengthChange: true,
+        pageLength: 20,
+        scrollY: 150,
+        scrollCollapse: true,
+        buttons: [
+            
+            {
+                extend: 'collection',
+                text: 'Load',
+                className: 'loadButton',
+                buttons: [
+                    {
+                        text: 'Load From Group',
+                        action: function ( ) {
+                            console.log('Load From Group (call dynamic pop-up)');
+                        }
+                    }
+                ]
+            },
+            {
+                extend: 'collection',
+                text: 'Options',
+                className: 'selectButton',
+                buttons: [
+                    {
+                        text: 'Select All',
+                        className: 'selectAllButton',
+                        action: function ( ) {
+                            langTable.rows().select();
+                        }
+                    },
+                    {
+                        text: 'Clear Selections',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            langTable.rows().deselect();
+                        }
+                    },
+                    {
+                        text: 'Delete Selected',
+                        className: 'deleteSelectButton',
+                        action: function ( ) {
+                            langTable.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Delete All Not Selected',
+                        className: 'deleteNotSelectButton',
+                        action: function ( ) {
+                            // $(table).rows()
+                            // table.rows('.selected').remove().draw(false);
+                            //  table.rows(not:'.selected').nodes().to$().removeClass('selected')
+                            console.log('Delete All Not Selections');
+                        }
+                    }
+                ]
+            },
+        ],
+        
+    } );
+} );
+    
+</script>

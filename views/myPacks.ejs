@@ -1,0 +1,137 @@
+<% include partials/common/drop1beforeTitle %>
+  <title>My Language Packs</title>
+  <link rel="stylesheet" href="../stylesheets/assets/myPacks.css">
+<% include partials/tables/includes/drop1allTableIncludes %>
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+  <div class="container pageContent">
+      <div class="content-table content-final text-center">
+          <h2 class="titleHeader">My Packs</h2>
+          <a href="/assets" class="returnLink">Return to Assets Menu</a>
+          <hr>
+          <% include partials/tables/html/myPacks %>
+      </div>
+    
+  </div>
+  
+  <div class="modal" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Confirm Group Deletion
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group text-center">
+              <p>Are you sure you want to use Delete this Pack?</p>
+              <span class="possibleDelete"></span>
+              <p>Once submitted, these changes cannot be undone, and all Log Files associated with this Pack will also be deleted</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modalBtn" data-dismiss="modal">Close</button>
+            <button type="button"  id="confirmDelete" class="btn btn-danger modalBtn" data-dismiss="modal">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pageEnder"></div>
+
+<% include partials/common/timeoutLogin %>
+<% include partials/tables/js/myPacks %>
+<% include partials/common/drop1footer %>
+<% include partials/common/auth %>
+<script>
+$(function() {
+  
+  checkToken();
+  var myPacks = $('#myPacks').DataTable();
+  
+  $('#hasToken').change(function(){
+    
+    <% include partials/common/pendingAdmin %>
+    
+
+    var langList = new XMLHttpRequest();
+    langList.open("GET", "http://159.203.163.147/langlist", true);
+
+    langList.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    // langList.setRequestHeader('Authorization', 'JWT ' + localStorage.getItem('token'));
+    langList.onreadystatechange = function () {
+      if(langList.readyState == XMLHttpRequest.DONE && langList.status == 200) {
+            // Request finished. Do processing here.
+            var response = JSON.parse(langList.responseText);
+            console.log(response);
+            for (var i=0; i<response.modules.length; ++i){
+            
+              var lang = response.modules[i];
+              if (lang.author == sessionStorage.getItem('ELLE-author')){
+
+                  myPacks.row.add( [ "", lang.lang_name, lang.version, lang.num_terms]).draw(false);
+              }
+            }
+      }
+      else {
+      
+      }
+    }
+    langList.send(null);
+                        
+    
+  });
+  
+  //  btn-group causes graphical errors when the screen gets small
+  $(".btn-group").removeClass("btn-group");
+  
+  
+  // $('#myPacks tbody').on('dblclick', 'tr', function () {
+  //   window.location = "/assets/myPacks/edit"
+  // });
+  
+  $('#confirmDelete').click(function(){
+    //Call Delete script to the DB
+    
+    var data = myPacks.row('.selected').data();
+    var deleteLangJSON = {
+        'lang_name': data[1],
+      };
+      
+      var deleteLangJSONreq = JSON.stringify(deleteLangJSON);
+      console.log(deleteLangJSONreq);
+      
+      var deleteLang = new XMLHttpRequest();
+      deleteLang.open("DELETE", "http://159.203.163.147/lang", true);
+      deleteLang.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      deleteLang.setRequestHeader("Content-Type", "application/json");
+      
+      deleteLang.onreadystatechange = function () {
+        if(deleteLang.readyState == XMLHttpRequest.DONE && deleteLang.status == 200) {
+            // Request finished. Do processing here.
+            var response = JSON.parse(postLang.responseText);
+            console.log(response);
+        }
+        else {
+          // var response = JSON.parse(deleteLang.responseText);
+          // console.log(response);
+          // // if (response = "Language created successfully"){
+          // //   window.location = "/languages/editMenu?lang=" + langVal;
+          // // }
+
+        }
+      }
+      
+      
+    
+    deleteLang.send(deleteLangJSONreq)
+    myPacks.row('.selected').remove().draw(false);
+  })
+  
+});
+
+</script>
+    

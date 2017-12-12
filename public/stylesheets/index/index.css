@@ -1,0 +1,302 @@
+body {
+  color: #303030;
+}
+
+.headerComponent {
+	/*position: relative;*/
+	/*margin-top: 3em;*/
+	/*margin-bottom: 3em;*/
+	color: black;
+	/*height: 7em;*/
+	background: rgba(0,0,0,0.5);
+	font-family: 'Lato', Arial, sans-serif;
+}
+
+.headerComponent > h2 {
+	/*position: absolute;*/
+	/*overflow: hidden;*/
+	/*width: 100%;*/
+	/*text-align: center;*/
+	/*text-transform: uppercase;*/
+	/*white-space: nowrap;*/
+	/*font-weight: 300;*/
+	/*font-style: italic;*/
+	/*font-size: 6.5em;*/
+	/*opacity: 0.1;*/
+	/*cursor: default;*/
+ /* height: 100%;*/
+
+}
+
+#menuTitle {
+  padding-bottom: 20px;
+}
+
+
+
+#wheelDiv {
+    height: 400px;
+    width: 400px;
+    margin: auto;
+}
+
+#wheelDiv>svg {
+    height: 100%;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    #wheelDiv {
+        height: 425px;
+        width: 425px;
+    }
+}
+
+@media (max-width: 400px) {
+    #wheelDiv {
+        height: 375px;
+        width: 375px;
+    }
+}
+
+@media (max-width: 350px) {
+    #wheelDiv {
+        height: 325px;
+        width: 325px;
+    }
+}
+
+.mainMenuTitleBox {
+    background-color: #c0c0aa;
+}
+
+
+
+#menuMainTitle {
+    margin: 0 auto;
+    padding: 30px 0;
+    
+}
+
+.menuContainer {
+    
+}
+
+.wheelBounds, .descriptionBounds {
+    border: 1px solid black;
+}
+
+#wheelDivTitle {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#menuTitle {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#menuTitle, #wheelDivTitle {
+    text-align: center;
+    padding-top: 20px;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 0;
+}
+
+.titleSep {
+    /*border-color: black;*/
+}
+
+.menuText {
+    text-align: center;
+    padding: 10px 20px;
+}
+
+#menuLine1 {
+    font-weight: bold;
+    /*color: black;*/
+    font-size: 1.6em; 
+}
+
+#menuLine2 {
+    font-weight: bold;
+    /*color: black;*/
+    font-size: 1.6em; 
+}
+
+#menuLine3{
+    font-weight: bold;
+    /*color: black;*/
+    font-size: 1.6em; 
+}
+
+#menuLine4 {
+    font-weight: bold;
+    /*color: black;*/
+    font-size: 1.6em; 
+}
+
+
+.linkContainer {
+    text-align: center;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 30px;
+}
+
+
+
+#menuLink {
+    color: black;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#menuLink:hover {
+    text-decoration: underline;
+}
+
+.color-helpBackground {
+    background-color: rgb(234, 188, 255 );
+    animation: helpgradient 300ms;
+}
+
+@keyframes helpgradient {
+  0% {
+    background: radial-gradient(circle at center, rgba( 234, 188, 255, 0 ) 0%, #fff 0%, #fff 100%);
+  }
+  25% {
+    background: radial-gradient(circle at center, rgba( 234, 188, 255, 0.3 ) 24%, #fff 25%, #fff 100%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba( 234, 188, 255, 0.5 ) 49%, #fff 50%, #fff 100%);
+  }
+  75% {
+    background: radial-gradient(circle at center, rgba( 234, 188, 255, 0.8 ) 74%, #fff 75%, #fff 100%);
+  }
+  100% {
+    color: #fff;
+    background: radial-gradient(circle at center, #eabcff 99%, #fff 100%, #fff 100%);
+  }
+}
+
+.color-userBackground {
+    background-color: rgb(255, 160, 160);
+    animation: usergradient 300ms;
+}
+
+@keyframes usergradient {
+  0% {
+    background: radial-gradient(circle at center, rgba( 255, 160, 160, 0 ) 0%, #fff 0%, #fff 100%);
+  }
+  25% {
+    background: radial-gradient(circle at center, rgba( 255, 160, 160, 0.3 ) 24%, #fff 25%, #fff 100%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba( 255, 160, 160, 0.5 ) 49%, #fff 50%, #fff 100%);
+  }
+  75% {
+    background: radial-gradient(circle at center, rgba( 255, 160, 160, 0.8 ) 74%, #fff 75%, #fff 100%);
+  }
+  100% {
+    color: #fff;
+    background: radial-gradient(circle at center, rgb( 255, 160, 160 ) 99%, #fff 100%, #fff 100%);
+  }
+}
+
+.color-dataBackground {
+    background-color: rgb(160, 179, 255);
+    animation: dbgradient 300ms;
+}
+
+@keyframes dbgradient {
+  0% {
+    background: radial-gradient(circle at center, rgba( 160, 179, 255, 0 ) 0%, #fff 0%, #fff 100%);
+  }
+  25% {
+    background: radial-gradient(circle at center, rgba( 160, 179, 255, 0.3 ) 24%, #fff 25%, #fff 100%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba( 160, 179, 255, 0.5 ) 49%, #fff 50%, #fff 100%);
+  }
+  75% {
+    background: radial-gradient(circle at center, rgba( 160, 179, 255, 0.8 ) 74%, #fff 75%, #fff 100%);
+  }
+  100% {
+    color: #fff;
+    background: radial-gradient(circle at center, rgb( 160, 179, 255 ) 99%, #fff 100%, #fff 100%);
+  }
+}
+
+.color-langBackground {
+    background-color: rgb(167, 255, 160);
+    animation: langgradient 300ms;
+}
+
+@keyframes langgradient {
+  0% {
+    background: radial-gradient(circle at center, rgba( 167, 255, 160, 0 ) 0%, #fff 0%, #fff 100%);
+  }
+  25% {
+    background: radial-gradient(circle at center, rgba( 167, 255, 160, 0.3 ) 24%, #fff 25%, #fff 100%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba( 167, 255, 160, 0.5 ) 49%, #fff 50%, #fff 100%);
+  }
+  75% {
+    background: radial-gradient(circle at center, rgba( 167, 255, 160, 0.8 ) 74%, #fff 75%, #fff 100%);
+  }
+  100% {
+    color: #fff;
+    background: radial-gradient(circle at center, rgb( 167, 255, 160 ) 99%, #fff 100%, #fff 100%);
+  }
+}
+
+.color-assetsBackground {
+    background-color: rgb(250, 255, 160);
+    animation: assetgradient 300ms;
+}
+
+@keyframes assetgradient {
+  0% {
+    background: radial-gradient(circle at center, rgba( 250, 255, 160, 0 ) 0%, #fff 0%, #fff 100%);
+  }
+  25% {
+    background: radial-gradient(circle at center, rgba( 250, 255, 160, 0.3 ) 24%, #fff 25%, #fff 100%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba( 250, 255, 160, 0.5 ) 49%, #fff 50%, #fff 100%);
+  }
+  75% {
+    background: radial-gradient(circle at center, rgba( 250, 255, 160, 0.8 ) 74%, #fff 75%, #fff 100%);
+  }
+  100% {
+    color: #fff;
+    background: radial-gradient(circle at center, rgb( 250, 255, 160 ) 99%, #fff 100%, #fff 100%);
+  }
+}
+
+.color-settingsBackground {
+    background-color: rgb(206, 206, 206);
+    animation: settinggradient 300ms;
+}
+
+@keyframes settinggradient {
+  0% {
+    background: radial-gradient(circle at center, rgba( 206, 206, 206, 0 ) 0%, #fff 0%, #fff 100%);
+  }
+  25% {
+    background: radial-gradient(circle at center, rgba( 206, 206, 206, 0.3 ) 24%, #fff 25%, #fff 100%);
+  }
+  50% {
+    background: radial-gradient(circle at center, rgba( 206, 206, 206, 0.5 ) 49%, #fff 50%, #fff 100%);
+  }
+  75% {
+    background: radial-gradient(circle at center, rgba( 206, 206, 206, 0.8 ) 74%, #fff 75%, #fff 100%);
+  }
+  100% {
+    color: #fff;
+    background: radial-gradient(circle at center, rgb( 206, 206, 206 ) 99%, #fff 100%, #fff 100%);
+  }
+}

@@ -1,0 +1,81 @@
+<script>
+$(document).ready(function() {
+    var myGroups = $('#myGroups').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "single",
+            selector: 'tr>td:nth-child(2), tr>td:nth-child(3)'
+
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            // {
+            //     extend:'colvis',
+            //     className: 'hideButton',
+            //     columns: ':gt(1)',
+            //     text: 'Hide'
+            // },
+            {
+                text: 'Create Group',
+                className: 'createButton btn-success',
+                action: function () {
+                    window.location = "/assets/myGroups/create";
+                    
+                }
+            },
+            {
+                text: 'Edit Group',
+                className: 'editButton btn-warning',
+                action: function () {
+                    if (myGroups.rows('.selected').count() == 1){
+                        var data = myGroups.row('.selected').data();
+                        window.location = "/assets/myGroups/edit?group=" + data[2];
+                    
+                        // window.location = "/assets/myGroups/edit";
+                    }
+                }
+            },
+            {
+                text: 'Delete Group',
+                className: 'deleteButton btn-danger',
+                action: function () {
+                    if (myGroups.rows('.selected').count() == 1){
+                        var data = myGroups.row('.selected').data();
+                        $('.possibleDelete').html(data[2]);
+                        $('#deleteConfirm').modal();
+                        // console.log(data[2]);
+                        // console.log(myGroups.row('.selected').column(1).data());
+                        // if (confirm("Are you sure you want to permanetly delete the selected group? This CANNOT be undone!")){
+                        //     myGroups.rows('.selected').remove().draw(false);
+                        // }
+                    }
+                }
+            }
+        ],
+    } );
+
+} );
+</script>

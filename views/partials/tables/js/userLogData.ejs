@@ -1,0 +1,277 @@
+<script>
+$(document).ready(function() {
+    var userLogs = $('#userLogs').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        select: {
+            style: "multi+shift"
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            },
+            {
+                targets: [7],
+                visible: false,
+                searchable: false
+            }
+            // {
+            //     searchable: false,
+            //     visible: false,
+            //     targets: [6,7]
+            // }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        // lengthChange: true,
+        pageLength: 20,
+        caseInsensitive: true,
+        buttons: [
+            // {
+            //     className: 'emptyLogsButton hide',
+            //     action: function ( ) {
+            //         userLogs.clear().draw(false);
+            //     }
+                
+                
+            // },
+            {
+                extend:'colvis',
+                className: 'hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            },
+            {
+                text: 'Export',
+                className: 'exportButton btn-success',
+                action: function() {
+                    
+                    var zip = new JSZip();
+                    // console.log("VERSION: " +  JSZip.version);
+                
+                    var testData;
+                    userLogs.rows().every (function(){
+                       var data = this.data();
+                       
+                       if (data[7] == undefined){
+                           return;
+                       }
+                    //   var details = data[7];
+                       
+                       //    Check to make sure something is actually in the dataset before adding it
+                       if (data[7].indexOf("T-T") != -1 ||
+                           data[7].indexOf("A-T") != -1 ||
+                           data[7].indexOf("I-T") != -1 ||
+                           data[7].indexOf("A-I") != -1 ||
+                           data[7].indexOf("T-I") != -1 ||
+                           data[7].indexOf("I-I") != -1 ){
+                               
+                           var fileName = selectedUser + "/" + selectedUser + " log" +  data[2] + '.csv';
+                           
+                           // The Log Info
+                           var csvString = "User,LogID,Game Type,Module,Version,Score,\n";
+                           csvString += selectedUser + ",";
+                           csvString += data[2] + ",";
+                           csvString += data[3] + ",";
+                           csvString += data[4] + ",";
+                           csvString += data[5] + ",";
+                           csvString += data[6] + "\n\n";
+                           //   The Actual Log Info
+                           csvString += data[7];
+                           
+                           zip.file(fileName, csvString);
+                           
+                        //   console.log("FILENAME: " + fileName);
+                        //   console.log("DATA: " + csvString);
+                           
+                           
+                       }
+                    });
+                    var d = new Date();
+                    var outputTitle = 'ELLE-Logs ' + (d.getMonth() + 1) + '-' + d.getDate()  + '-' + 
+                                            d.getFullYear() + ' (' +  d.getHours() + ';' +
+                                            d.getMinutes() + ').zip';
+                    
+                   zip.generateAsync({type:"blob"}).then(function(content) {
+                        // see FileSaver.js
+                        saveAs(content, outputTitle );
+                    });
+                }
+            },
+            {
+                extend: 'collection',
+                text: 'Selection',
+                className: 'selectionButton btn-warning',
+                buttons: [
+                    {
+                        text: "Use Only Selected Module(s)",
+                        className: 'modSelectButton',
+                        action: function() {
+                            if (userLogs.rows('.selected').count() == 0){
+                                return;
+                            }
+                            var selected = [];
+                            userLogs.rows('.selected').every( function ( ) {
+                                var data = this.data();
+                                selected.push(data[2]);
+                            } );
+                            userLogs.rows().every(function (){
+                               var data = this.data();
+                               var lang = data[2];
+                               
+                               var matchFound = false;
+                               for (var i=0; i<selected.length; i++){
+                                    if (lang == selected[i]){
+                                        this.deselect();
+                                        matchFound = true;
+                                        break;
+                                    }
+                                }
+                                if (!matchFound){
+                                    this.select();
+                                }
+                            });
+                            userLogs.rows('.selected').remove().draw(false);
+                            $("#generateGraphs").click();
+                        }
+                    },
+                    {
+                        text: 'Clear Selections',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            userLogs.rows().deselect();
+                        }
+                    },
+                    {
+                        text: 'Remove Selections',
+                        className: 'removeSelectButton',
+                        action: function ( ) {
+                            userLogs.rows('.selected').remove().draw(false);
+                            $("#generateGraphs").click();
+                        }
+                    },
+                    {
+                        text: 'Remove All Not Selected',
+                        className: 'removeNotSelectButton',
+                        action: function ( ) {
+                            userLogs.rows({selected: false}).remove().draw(false);
+                            userLogs.rows().deselect();
+                            $("#generateGraphs").click();
+                        }
+                    }
+                ]
+            },
+            
+            {
+                extend: 'collection',
+                text: 'Filter Data',
+                className: 'filterButton btn-danger',
+                buttons: [
+                    {
+                        text: 'Filter Options',
+                        className: 'filterButton',
+                        action: function ( ) {
+                            $('#dataSortModal').modal();
+                        }
+                    },
+                    {
+                        text: 'Reset Filters',
+                        className: 'filterButton',
+                        action: function ( ) {
+                            var userData = new XMLHttpRequest();
+                            var user = $("#selectedUser").val();
+                            var urlString = 'http://159.203.163.147/log/player/' + user;
+                            console.log(urlString);
+                            
+                            userData.open("GET", urlString, true);
+                            userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+        
+                            userData.onreadystatechange = function () {
+                              if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+                                  // Request finished. Do processing here.
+                                  // Just check if the token is still valid, login-modal with handle real auth
+                                  var userLogs = $('#userLogs').DataTable();
+                                  userLogs.clear().draw(false);
+                                //   $("#userLogs").DataTable().clear().draw(false);
+                                  
+                                  var response = JSON.parse(userData.responseText);
+                                  console.log(response);
+                                  
+                                  for (var i=0; i<response.logs.length; ++i){
+                                      var log = response.logs[i];
+                                      
+                                    //   var game_type;
+                                    //   if (log.game_type == "TPP")         game_type ="TPP" 
+                                    //   else if (log.game_type == "TPO")    game_type ="TPO" 
+                                    //   else                                game_type ="VR" 
+                                      
+                                      userLogs.row.add( ["", (i+1), log.logID, log.game_type, log.lang_name, log.lang_version, log.score]).draw(false);
+                                    //   userLogs.row.add("", "1", "NEED THIS", "NEED THIS", "NEED THIS", "NEED THIS", log.score, "NEED THIS", log.puzzles_attempted);
+                                      
+                                  }
+                                  
+                                  $('#generateGraphs').click();
+                                  
+                                  if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
+                                  
+                                  $('html, body').animate({
+                                    scrollTop: $("#bigTab-data-one").offset().top
+                                  }, 1500);
+
+                                  $('.logData-resizeButton').click();
+                                  $("#generateGraphs").click();
+ 
+                              }
+                              else {
+                              }
+                            }
+                            
+                            userData.send(null)
+                        }
+                    },
+                ]
+            }
+        ],
+    } );
+    
+    new $.fn.dataTable.Buttons (userLogs, {
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'logData-resizeButton resizeButton secondSetBtn hide',
+              action: function () {
+                  userLogs.responsive.recalc();
+              }
+            }
+            // ,
+            // {
+            //     text: 'Use Selection',
+            //     className: 'su-submitButton btn-success secondSetBtn',
+            //     action: function () {
+            //         $('.searchSubmitButton').click();
+            //     }
+            // }
+        ]
+    });
+    
+    userLogs.buttons( 1, null ).container().appendTo(
+        userLogs.table().container()
+    );
+    
+    
+} );
+</script>

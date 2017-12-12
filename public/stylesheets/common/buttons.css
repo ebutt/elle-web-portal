@@ -1,0 +1,22 @@
+.endButton {
+    margin-top: 12px;
+}
+
+.dt-buttons .btn {
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 10px;
+}
+
+.dt-buttons {
+    text-align: center;
+}
+
+.dt-button.dropdown-item {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.secondSetBtn {
+    margin-bottom: 20px;
+}

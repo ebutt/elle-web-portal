@@ -1,0 +1,74 @@
+<script>
+$(document).ready(function() {
+    var myPacks = $('#myPacks').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "single"
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            // {
+            //     extend:'colvis',
+            //     className: 'hideButton',
+            //     columns: ':gt(1)',
+            //     text: 'Hide'
+            // },
+            {
+                text: 'Create Pack',
+                className: 'createButton btn-success',
+                action: function () {
+                    window.location = "/languages/create";
+                    
+                }
+            },
+            {
+                text: 'Edit Pack',
+                className: 'editButton btn-warning',
+                action: function () {
+                    if (myPacks.rows('.selected').count() == 1){
+                        var data = myPacks.row('.selected').data();
+                        window.location = "/languages/editMenu?lang=" + data[1];
+                        console.log(data);
+                        
+                    }
+                }
+            },
+            {
+                text: 'Delete Pack',
+                className: 'deleteButton btn-danger',
+                action: function () {
+                    if (myPacks.rows('.selected').count() == 1){
+                        var data = myPacks.row('.selected').data();
+                        $('.possibleDelete').html(data[1]);
+                        $('#deleteConfirm').modal();
+                    }
+                }
+            }
+        ]
+    } );
+
+} );
+</script>

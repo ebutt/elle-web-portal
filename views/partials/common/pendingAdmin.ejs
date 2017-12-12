@@ -1,0 +1,17 @@
+
+  
+        var pendingAdmins = new XMLHttpRequest();
+        pendingAdmins.open("GET", 'http://159.203.163.147/pendingAdmin', true);
+        pendingAdmins.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+
+        pendingAdmins.onreadystatechange = function () {
+          if(pendingAdmins.readyState == XMLHttpRequest.DONE && pendingAdmins.status == 200) {
+              var response = JSON.parse(pendingAdmins.responseText);
+              if (response.pending_admins.length > 0){
+                  $('#pendingBtn').removeClass('hide');
+              }
+          }
+          else {}
+        }
+        
+        pendingAdmins.send(null);

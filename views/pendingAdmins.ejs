@@ -1,0 +1,100 @@
+<% include partials/common/drop1beforeTitle %>
+  <title>Pending Admins</title>
+  <link rel="stylesheet" href="../stylesheets/settings/pendingAdmins.css">
+<% include partials/tables/includes/drop1allTableIncludes %>
+<% include partials/common/navbar %>
+
+  <div class="container pageContent">
+    
+      <div class="content-table content-final text-center">
+          <h2 class="titleHeader">Pending Admins</h2>
+          <a href="/settings" class="returnLink">Return to Settings Menu</a>
+          <hr>
+          <% include partials/tables/html/pendingAdmins %>
+      </div>
+      
+    <div class="modal" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Confirm Group Deletion
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group text-center">
+              <p class="modalText">Are you sure you want to use Delete this Group?</p>
+              <span class="possibleDelete"></span>
+              <p class="modalText">Once submitted, these changes cannot be undone.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modalBtn" data-dismiss="modal">Close</button>
+            <button type="button"  id="confirmDelete" class="btn btn-danger modalBtn" data-dismiss="modal">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+      
+    
+  </div>
+  
+  <div class="pageEnder"></div>
+  
+  <% include partials/common/timeoutLogin %>
+  
+
+
+<% include partials/tables/js/pendingAdmins %>
+<% include partials/common/drop1footer %>
+<% include partials/common/auth %>
+<script>
+
+
+$(function() {
+    
+    
+  
+  checkToken();
+  //  btn-group causes graphical errors when the screen gets small
+  var pendingAdmins = $('#pendingAdmins').DataTable();
+  
+  var checkAdmin = new XMLHttpRequest();
+  checkAdmin.open("GET", 'http://159.203.163.147/pendingAdmin', true);
+  checkAdmin.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+  
+  checkAdmin.onreadystatechange = function () {
+    if(checkAdmin.readyState == XMLHttpRequest.DONE && checkAdmin.status == 200) {
+        var response = JSON.parse(checkAdmin.responseText);
+        if (response.pending_admins.length > 0){
+            $('#pendingBtn').removeClass('hide');
+            
+            for (var i=0; i<response.pending_admins.length; ++i){
+              var admin = response.pending_admins[i];
+              pendingAdmins.row.add(["", (i+1), admin.username, admin.email]).draw(false);
+            }
+        }
+        
+        setTimeout(function() {
+          $(".resizeButton").click();
+        }, 200)
+
+    }
+    else {}
+  }
+  
+  checkAdmin.send(null);
+  
+  $('#hasToken').change(function(){
+
+  });
+  
+  $(".btn-group").removeClass("btn-group");
+  
+});
+
+</script>
+    

@@ -1,0 +1,34 @@
+th {
+    font-weight: normal;
+}
+
+#form-termSearch {
+    margin-bottom: 200px;
+}
+
+.tableImg {
+    height: 60px;
+}
+
+.tableAudio {
+    
+}
+
+.currentDeclare {
+text-decoration: underline;
+}
+
+.searchHeader {
+    
+}
+
+.linkHolder {
+    margin-bottom: 30px;
+}
+
+.linkText {
+    /*color: black;*/
+    font-size: x-large;
+    text-decoration: underline;
+    font-weight: bold;
+}

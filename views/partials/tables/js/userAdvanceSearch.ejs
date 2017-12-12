@@ -1,0 +1,186 @@
+<script>
+
+var advSelectType;
+
+function advGrabLogs(selectedSwitch){
+    
+    advSwitch = true;
+    var userAdvanceSearch = $("#userAdvanceSearch").DataTable();
+    var selectSwitch;
+    if (selectedSwitch === "Y"){
+        selectSwitch = ".selected";
+        advSelectType = "Y";
+    }
+    else {
+        selectSwitch = ""
+        advSelectType = "N";
+    }
+
+    var databaseLogs = $('#databaseLogs').DataTable();
+    databaseLogs.clear().draw(false);
+    
+    userAdvanceSearch.rows(selectSwitch).every(function(){
+        var data = this.data();
+        var userData = new XMLHttpRequest();
+        var urlString = 'http://159.203.163.147/log/player/' + data[1];
+        userData.open("GET", urlString, true);
+        userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+
+        userData.onreadystatechange = function () {
+          if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+              var response = JSON.parse(userData.responseText);
+
+              for (var i=0; i<response.logs.length; ++i){
+                  var log = response.logs[i];
+                  
+                  var game_type;
+                  if (log.game_type == "TPP" ||
+                      log.game_type == "tpp")         game_type ="TPP" 
+                  else if (log.game_type == "TPO" ||
+                           log.game_type == "tpo")    game_type ="TPO" 
+                  else                                game_type ="VR" 
+
+                  databaseLogs.row.add( ["", data[1], (i+1), game_type, log.lang_name, log.lang_version, log.score, log.logID, log.puzzles_attempted]).draw(false);
+              }
+          }
+          else {
+          }
+        }
+        
+        userData.send(null);
+
+    });
+    
+              
+      if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
+      
+      $('html, body').animate({
+        scrollTop: $("#bigTab-data-one").offset().top
+      }, 1500);
+      
+      setTimeout(function() {
+          $('.resizeButton').click();
+      }, 100)
+      
+      
+    
+                
+}
+
+$(document).ready(function() {
+    
+    var userAdvanceSearch = $('#userAdvanceSearch').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "multi+shift",
+            selector: 'tr>td:nth-child(2), tr>td:nth-child(3), tr>td:nth-child(4), tr>td:nth-child(5), tr>td:nth-child(6)'
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 20,
+        buttons: [
+            {
+                extend:'colvis',
+                className: 'hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            },
+            {
+                //    What the Admin clicks to open the filters modal
+                //    Filter logic handled by userlog.ejs
+                text: 'Establish Filters',
+                className: 'establishFilters btn-warning',
+                action: function() {
+                   $("#advancedSelectModal").modal();
+                }
+            },
+            {
+                //    What the Admin clicks to start over again
+                text: 'Reset Filters',
+                className: 'resetFilters btn-danger',
+                action: function() {
+                    userAdvanceSearch.clear().draw(false);
+                    $("#sexSelect").val(0);
+                    $("#minLogs").val("");
+                    $("#maxLogs").val("");
+                    $("#minAge").val("");
+                    $("#maxAge").val("");
+                    $("#pickModules").val("");
+                }
+            },
+            {
+                extend: 'collection',
+                text: 'Select Logs',
+                className: 'selectionButton btn-success',
+                buttons: [
+                    {
+                        text: "Logs for Selected Users",
+                        className: 'useSelectedUsers',
+                        action: function() {
+                            if (userAdvanceSearch.rows('.selected').count() == 0){
+                                return;
+                            }
+                            else {
+                                advGrabLogs("Y");
+                            }
+                        }
+                    },
+                    {
+                        text: "Logs for All Users in Table",
+                        className: 'useSelectedUsers',
+                        action: function() {
+                            advGrabLogs("N");
+                        }
+                    },
+                    {
+                        text: 'Clear Selected Users',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            userAdvanceSearch.rows().deselect();
+                        }
+                    },
+                ]
+            }
+        ],
+    } );
+    
+    new $.fn.dataTable.Buttons (userAdvanceSearch, {
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'resizeButton hide secondSetBtn',
+              action: function () {
+                  //userAdvanceSearch.
+                  userAdvanceSearch.responsive.recalc();
+              }
+            }
+        ]
+    });
+    
+    userAdvanceSearch.buttons( 1, null ).container().appendTo(
+        userAdvanceSearch.table().container()
+    );
+    
+} );
+</script>

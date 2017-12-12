@@ -1,0 +1,82 @@
+<% include partials/common/drop1beforeTitle %>
+  <title>Edit Language Menu</title>
+  <link rel="stylesheet" href="../stylesheets/language/editLangMenu.css">
+
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="container pageContent">
+    
+    <div class="col-12 col-lg-8 offset-lg-2 content-title text-center">
+        <h2 class="pageHeader">Language Pack Menu</h2>
+        <div class="text-center">
+            <a href="/languages" class="returnLink">Return to Language Menu</a>
+        </div>
+        <hr>
+        <h3>Current Language:</h3>
+        <div class="menuSpacer">
+          <h3 class="selectedLanguage"><span id="currentLanguage"></span></h3>
+        </div>
+    </div>
+    
+    
+    <div class="row">
+      
+      <div class="col-10 offset-1 col-sm-6 offset-sm-0 col-lg-4 offset-lg-2">
+        <a id="createRoute" href="/languages/editMenu/editTerm">
+          <div class="card content-center" id="createCard">
+            <img class="customIcon" src="../assets/img/icons/languageBlock1.png">
+            <h3 class="cardCaption text-center">Create a Term</h3>
+          </div>
+        </a>
+      </div>
+      <div class="col-10 offset-1 col-sm-6 offset-sm-0 col-lg-4">
+        <a id="selectRoute" href="/languages/editMenu/selectTerm">
+          <div class="card content-center" id="editCard">
+            <img class="customIcon" src="../assets/img/icons/editPage1.png">
+            <h3 class="cardCaption text-center">Edit a Term</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+</div>
+
+<div class="pageEnder"></div>
+
+<% include partials/common/timeoutLogin %>
+
+<% include partials/common/drop1footer %>
+<% include partials/common/auth %>
+<script>
+
+  function getQueryVariable(variable){
+     var query = window.location.search.substring(1);
+     var vars = query.split("&");
+     for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if(pair[0] == variable){
+          return pair[1];}
+     }
+     return(false);
+  }
+  
+  $(function(){
+    // console.log(getQueryVariable("lang"));
+    $("#currentLanguage").html(decodeURI(getQueryVariable("lang")));
+    // var createRoute = "/languages/editMenu/editTerm?lang="+getQueryVariable("lang")+"&term=New Term!"
+    var createRoute = "/languages/editMenu/createTerm?lang="+getQueryVariable("lang");
+    var selectRoute = "/languages/editMenu/selectTerm?lang="+getQueryVariable("lang");
+    // console.log(createRoute);
+    // console.log(selectRoute);
+    $("#createRoute").attr("href", createRoute);
+    $("#selectRoute").attr("href", selectRoute);
+    checkToken();
+  });
+  
+  $('#hasToken').change(function(){
+    
+    <% include partials/common/pendingAdmin %>
+    
+  });
+</script>
+    

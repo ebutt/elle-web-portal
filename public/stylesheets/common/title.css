@@ -1,0 +1,61 @@
+.pageHeader {
+    padding: 10px;
+}
+
+.formLabel {
+    margin-bottom: 15px;
+    font-size: 1.75em;
+}
+
+.secondFormLabel {
+    margin-top: 10px;
+}
+
+.currentDeclare {
+    padding: 10px 0;
+}
+
+.currentValue {
+    padding-bottom: 10px;
+}
+
+.titleHeader {
+    padding: 15px 0;   
+    text-align: center;
+}
+
+.titleComment {
+    text-align: center;
+}
+
+.tableHeader, .searchHeader {
+    padding-top: 15px;
+    text-align: center;
+}
+
+.searchCaption {
+    font-size: 1.1em;
+}
+
+.searchingComment {
+    margin-top: 10px;
+}
+
+.cardCaption {
+    padding: 10px 0;
+    font-weight: bold;
+}
+
+#deleteConfirm .modal-dialog .modal-header #modalTitle {
+    color: red;
+    font-weight: bold;
+}
+
+.modalText {
+    /*font-size: medium;*/
+}
+
+.possibleDelete {
+    font-weight: bold;
+}
+

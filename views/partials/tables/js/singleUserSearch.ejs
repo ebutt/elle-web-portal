@@ -1,0 +1,193 @@
+<script>
+$(document).ready(function() {
+    
+    var singleUserSearch = $('#singleUserSearch').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "single"
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 20,
+        buttons: [
+            {
+                extend: 'collection',
+                text: 'Load',
+                className: 'su-loadButton loadButton btn-warning',
+                buttons: [
+                    {
+                        text: 'Load All',
+                        className: 'loadAllButton specialLoad',
+                        action: function ( ) {
+                            //  Load Users
+                          var userData = new XMLHttpRequest();
+                          userData.open("GET", 'http://159.203.163.147/playerList', true);
+                          userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                          
+                          //  What to do if the Auth passes/fails
+                          userData.onreadystatechange = function () {
+                            if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+                                  // Request finished. Do processing here.
+                                  // Just check if the token is still valid, login-modal with handle real auth
+                                var response = JSON.parse(userData.responseText);
+                                userReq = response;
+                                users = [];
+                                singleUserSearch.clear();
+                                for (var i=0; i<response.players.length; ++i){
+                                  var player = response.players[i];
+                                  var sex;
+                                  if      (player.sex == "m")   sex = "Male"
+                                  else if (player.sex == "f")   sex = "Female"
+                                  else if (player.sex == "t")   sex = "Transgender"
+                                  else if (player.sex =="o")    sex = "Other"
+                                  singleUserSearch.row.add(["",player.username, "", "", "", sex, player.age, ""]).draw(false);
+                                  users.push(player.username);
+                                  
+                                }
+                                
+                                
+                            }
+                            else {}
+                          }
+                          
+                          //  Send the Auth request
+                          userData.send(null);
+                        }
+                    },
+                    {
+                        text: 'Load From Group',
+                        className: 'loadGroupButton',
+                        action: function ( ) {
+                            $('#loadGroupsModal').modal();
+                        }
+                    }
+                    // {
+                    //     text: 'Load All',
+                    //     className: 'loadAllButton',
+                    //     action: function (  ) {
+                            
+                    //     }
+                    // }
+                ]
+            },
+            {
+                extend:'colvis',
+                className: 'hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            },
+            {
+                text: 'Use Selection',
+                className: 'searchSubmitButton btn-success',
+                action: function () {
+                    if (singleUserSearch.rows('.selected').count() == 0){
+             
+                    }
+                    else {
+                        var userData = new XMLHttpRequest();
+                        var data = singleUserSearch.row('.selected').data();
+                        var urlString = 'http://159.203.163.147/log/player/' + data[1];
+                        console.log(urlString);
+                        // var urlString = 'http://159.203.163.147/log/player/';
+                        userData.open("GET", urlString, true);
+                        userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    
+                        userData.onreadystatechange = function () {
+                          if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+                              // Request finished. Do processing here.
+                              // Just check if the token is still valid, login-modal with handle real auth
+                              var userLogs = $('#userLogs').DataTable();
+                              userLogs.clear().draw(false);
+                            //   $("#userLogs").DataTable().clear().draw(false);
+                              
+                              var response = JSON.parse(userData.responseText);
+                              console.log(response);
+                              
+                              for (var i=0; i<response.logs.length; ++i){
+                                  var log = response.logs[i];
+                                  
+                                //   var game_type;
+                                //   if (log.game_type == "TPP")         game_type ="TPP" 
+                                //   else if (log.game_type == "TPO")    game_type ="TPO" 
+                                //   else                                game_type ="VR" 
+                                  
+                                  userLogs.row.add( ["", (i+1), log.logID, log.game_type, log.lang_name, log.lang_version, log.score, log.puzzles_attempted]).draw(false);
+                                //   userLogs.row.add("", "1", "NEED THIS", "NEED THIS", "NEED THIS", "NEED THIS", log.score, "NEED THIS", log.puzzles_attempted);
+                                  
+                              }
+                              
+                              $('#generateGraphs').click();
+                              
+                              if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
+                              
+                              $('html, body').animate({
+                                scrollTop: $("#bigTab-data-one").offset().top
+                              }, 1500);
+                              
+                              $('#selectedUser').val(data[1]);
+                              $('.logData-resizeButton').click();
+                              
+                                // readLangList(response);
+                              // console.log("Success!");
+                          }
+                          else {
+                          }
+                        }
+                        
+                        userData.send(null);
+                        selectedUser = data[1];
+                    }
+                }
+            }
+        ],
+    } );
+    
+    new $.fn.dataTable.Buttons (singleUserSearch, {
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'su-resizeButton resizeButton secondSetBtn hide',
+              action: function () {
+                  //singleUserSearch.
+                  console.log("Called");
+                  singleUserSearch.responsive.recalc();
+              }
+            }
+            // ,
+            // {
+            //     text: 'Use Selection',
+            //     className: 'su-submitButton btn-success secondSetBtn',
+            //     action: function () {
+            //         $('.searchSubmitButton').click();
+            //     }
+            // }
+        ]
+    });
+    
+    singleUserSearch.buttons( 1, null ).container().appendTo(
+        singleUserSearch.table().container()
+    );
+    
+} );
+</script>

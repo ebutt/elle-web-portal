@@ -1,0 +1,13 @@
+#createCard {
+  /*background-image: linear-gradient(-20deg, #d558c8 0%, #24d292 100%);*/
+/*background-image: linear-gradient(20deg, #f9d423 0%, #ff4e50 100%);*/
+/*background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);*/
+background-image: linear-gradient(140deg, #96fbc4 0%, #f9f586 100%);
+}
+
+#editCard {
+  background-image: linear-gradient(-225deg, #5271C4 0%, #B19FFF 48%, #ECA1FE 100%);
+  /*background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);*/
+  /*background-image: linear-gradient(to top, #9795f0 0%, #fbc8d4 100%);*/
+/*background-image: linear-gradient(140deg, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);*/
+}

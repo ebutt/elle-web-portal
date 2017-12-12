@@ -1,0 +1,197 @@
+<% include partials/common/drop1beforeTitle %>
+  <title>Select a Language</title>
+<% include partials/tables/includes/drop1allTableIncludes %>
+  <link rel="stylesheet" href="../stylesheets/language/selectLang.css">
+    <link rel="stylesheet" href="../assets/css/jquery.typeahead.min.css">
+  <script src="../assets/js/jquery.typeahead.min.js" type="text/javascript"></script>
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="pageContent container">
+
+    <div class="content-text">
+      <div class="text-center">
+        <h2 class="titleHeader">Select a Language</h2>.
+        <a href="/languages" class="returnLink menuSpacer">Return to Language Menu</a>
+        <hr>
+        <h4 class="pageDescription menuSpacer text-underline">Choose a Language to Edit!</h5>
+        
+      </div>
+      <div class="nav-tabs-navigation">
+        <div class="nav-tabs-wrapper">
+          <ul id="tabs" class="nav nav-tabs" role="tablist">
+            <li class="nav-item quick-select">
+              <a class="nav-link active" data-toggle="tab" href="#quickSelect" role="tab">Quick Select</a>
+            </li>
+            <li class="nav-item table-select">
+              <a class="nav-link" data-toggle="tab" href="#tableSelect" role="tab">Table Select</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div id="my-tab-content" class="tab-content">
+  
+        <div class="tab-pane active text-center" id="quickSelect" role="tabpanel">
+          <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+              <form id="form-langSearch" name="form-langSearch">
+                <div class="typeahead__container">
+                  <div class="typeahead__field">
+                    <span class="typeahead__query">
+                        <input class="js-typeahead-langSearch" id="langSearch" name="langSearch[query]" type="search" placeholder="Select" autocomplete="off">
+                    </span>
+                    <span class="typeahead__button">
+                        <button type="submit" id="typeaheadSubmitButton">
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </span>
+                  </div>
+                </div>
+              </form>
+            </div>
+              
+        </div>
+        
+        <div class="tab-pane" id="tableSelect" role="tabpanel">
+          <% include partials/tables/html/selectLanguage %>
+        </div>
+        
+        <div class="tab-pane" id="advancedSelect" role="tabpanel">
+          <p>Coming Soon!</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="pageEnder"></div>
+    <button id="quickSelectLoad" type="button" class="hide"></button>
+    
+    <% include partials/common/timeoutLogin %>
+    
+</div>
+
+
+<% include partials/common/drop1footer %>
+<% include partials/tables/js/selectLanguage %>
+<% include partials/common/auth %>
+<script>
+$(function() {
+  
+  var langNames = [];
+  
+  checkToken();
+  
+  var selectLanguage = $('#selectLanguage').DataTable();
+  
+  $('#hasToken').change(function(){
+    
+    <% include partials/common/pendingAdmin %>
+    
+    var langList = new XMLHttpRequest();
+      langList.open("GET", "http://159.203.163.147/langlist", true);
+    
+      langList.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      langList.onreadystatechange = function () {
+        if(langList.readyState == XMLHttpRequest.DONE && langList.status == 200) {
+              var response = JSON.parse(langList.responseText);
+              for (var i=0; i<response.modules.length; ++i){
+                var lang = response.modules[i];
+                langNames.push(lang.lang_name);
+                selectLanguage.row.add( [ "", lang.lang_name, lang.version, lang.num_terms, lang.author]).draw(false);
+              }
+              
+              setTimeout(function() {
+                $(".resizeButton").click();
+              }, 200)
+              
+              $('#quickSelectLoad').click();
+        }
+        else {
+          
+        }
+      }
+      langList.send(null);
+    
+  });
+  
+  
+  //  btn-group causes graphical errors when the screen gets small
+  $(".btn-group").removeClass("btn-group");
+  
+  //  Have to auto-resize upon table-select becoming active (after DOM is loaded)
+  $(".table-select").click(function() {
+    setTimeout(function() {
+      $(".resizeButton").click();
+    }, 10)
+    
+  });
+  
+  // $('#selectLanguage tbody').on('dblclick', 'tr', function () {
+  //     var data = selectLanguage.row( this ).data();
+  //     window.location = "/languages/editMenu?lang=" + encodeURIComponent(data[1]);
+  // });
+  
+   $("#quickSelectLoad").click(function(){
+
+      var searchData = new Array();
+      
+      selectLanguage.rows().every(function(){
+        var data = (this).data();
+        searchData.push(data[1]);
+      });
+      
+      $.typeahead({
+        input: '.js-typeahead-langSearch',
+        minLength: 1,
+        maxItem: 5,
+        searchOnFocus: true,
+        dynamic: true,
+        delay: 250,
+        offset: true,
+        accent: true,
+        blueOnTab: false,
+        order: "asc",
+      
+        source: {
+            data: searchData
+          },
+          callback: {
+              onInit: function (node) {
+              }
+          }
+      });
+      
+    });
+      
+  
+  $.fn.serializeObject = function(){
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+  };
+  
+  
+  $( "#form-langSearch" ).submit(function( event ) {
+    event.preventDefault();
+    if (langNames.indexOf($("#langSearch").val() != -1)){
+        window.location = "/languages/editMenu?lang=" + $("#langSearch").val();
+    }
+    
+  });
+  
+  
+});
+
+
+</script>
+
+    

@@ -1,0 +1,27 @@
+#accountCard {
+    /*background-image: linear-gradient(to right, #eea2a2 0%, #bbc1bf 19%, #57c6e1 42%, #b49fda 79%, #7ac5d8 100%);*/
+    /*background-image: 1linear-gradient(120deg, #f093fb 0%, #f5576c 100%);*/
+    /*background-image: linear-gradient(to top, #96fbc4 0%, #f9f586 100%);*/
+    /*background-image: linear-gradient(60deg, #abecd6 0%, #fbed96 100%);*/
+    /*background-image: linear-gradient(to top, #0fd850 0%, #f9f047 100%);*/
+    /*background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);*/
+    /*background-image: linear-gradient(to right, #fa709a 0%, #fee140 100%);*/
+    /*background-image: linear-gradient(to top, #fddb92 0%, #d1fdff 100%);*/
+    /*background-image: linear-gradient(to right, #f83600 0%, #f9d423 100%);*/
+    /*background-image: linear-gradient(60deg, #abecd6 0%, #fbed96 100%);*/
+    /*background-image: linear-gradient(to top, #4fb576 0%, #44c489 30%, #28a9ae 46%, #28a2b7 59%, #4c7788 71%, #6c4f63 86%, #432c39 100%);*/
+    /*background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);*/
+    /*background-image: linear-gradient(to top, #0fd850 0%, #f9f047 100%);*/
+    /*background-image: linear-gradient(to top right, #d5dee7 0%, #ffafbd 0%, #c9ffbf 100%);*/
+    /*background-image: linear-gradient(-225deg, #69EACB 0%, #EACCF8 48%, #6654F1 100%);*/
+    background-image: linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%);
+    
+}
+
+#passCard {
+    /*background-image: linear-gradient(to top, #37ecba 0%, #72afd3 100%);*/
+    /*background-image: linear-gradient(-225deg, #B7F8DB 0%, #50A7C2 100%);*/
+    /*background-image: linear-gradient(to right, #92fe9d 0%, #00c9ff 100%);*/
+    background-image: linear-gradient(to top left, #37ecba 0%, #72afd3 100%);
+    
+}

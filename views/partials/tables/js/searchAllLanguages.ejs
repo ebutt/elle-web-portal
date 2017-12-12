@@ -1,0 +1,121 @@
+<script>
+$(document).ready(function() {
+    var searchAllLanguages = $('#searchAllLanguages').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "single"
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            {
+                extend: 'collection',
+                text: 'Load',
+                className: 'sal-loadButton btn-warning loadButton',
+                buttons: [
+                    {
+                        text: 'Load Only My Packs',
+                        className: 'loadGroupButton',
+                        action: function (  ) {
+                            searchAllLanguages.clear().draw(false);
+          
+                            var langList = new XMLHttpRequest();
+                            langList.open("GET", "http://159.203.163.147/langlist", true);
+                        
+                            langList.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                            langList.onreadystatechange = function () {
+                              if(langList.readyState == XMLHttpRequest.DONE && langList.status == 200) {
+                                    var response = JSON.parse(langList.responseText);
+                                    for (var i=0; i<response.modules.length; ++i){
+                                    
+                                      var lang = response.modules[i];
+                                      if (lang.author == sessionStorage.getItem('ELLE-author')){
+    
+                                          searchAllLanguages.row.add( [ "", lang.lang_name, lang.version, lang.num_terms, lang.author]).draw(false);
+                                      }
+                                    }
+                              }
+                              else {
+                              
+                              }
+                            }
+                            langList.send(null);
+                        }
+                    },
+                    {
+                        text: 'Load All',
+                        className: 'loadAllButton ',
+                        action: function (  ) {
+                            searchAllLanguages.clear().draw(false);
+          
+                            var langList = new XMLHttpRequest();
+                            langList.open("GET", "http://159.203.163.147/langlist", true);
+                        
+                            langList.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                            langList.onreadystatechange = function () {
+                              if(langList.readyState == XMLHttpRequest.DONE && langList.status == 200) {
+                                    var response = JSON.parse(langList.responseText);
+                                    for (var i=0; i<response.modules.length; ++i){
+                                    
+                                      var lang = response.modules[i];
+                                      searchAllLanguages.row.add( [ "", lang.lang_name, lang.version, lang.num_terms, lang.author]).draw(false);
+                                    }
+                              }
+                              else {
+                              
+                              }
+                            }
+                            langList.send(null);
+                        }
+                    }
+                ]
+            },
+            {
+                extend:'colvis',
+                className: 'sal-hideButton hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            }
+        ],
+    } );
+    
+    new $.fn.dataTable.Buttons (searchAllLanguages, {
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'sal-resizeButton resizeButton secondSetBtn hide',
+              action: function () {
+                  searchAllLanguages.responsive.recalc();
+              }
+            },
+        ]
+    });
+    
+    searchAllLanguages.buttons( 1, null ).container().appendTo(
+        searchAllLanguages.table().container()
+    );
+    
+} );
+</script>

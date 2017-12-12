@@ -1,0 +1,29 @@
+/*.card {*/
+/*    -webkit-filter: brightness(90%);*/
+/*    border: 2px groove black;*/
+/*    border-radius: 30px;*/
+/*    margin: 12.5px 0px;*/
+/*    -webkit-box-shadow: 7px 15px 25px -8px rgba(0,0,0,0.5);*/
+/*    -moz-box-shadow: 7px 15px 25px -8px rgba(0,0,0,0.5);*/
+/*    box-shadow: 7px 15px 25px -8px rgba(0,0,0,0.5);*/
+/*}*/
+
+/*.card:hover{*/
+/*    -webkit-filter: brightness(115%);*/
+/*    -webkit-box-shadow: 3px 4px 5px 0px rgba(0,0,0,0.70); */
+/*    -moz-box-shadow: 3px 4px 5px 0px rgba(0,0,0,0.70); */
+/*    box-shadow: 3px 4px 5px 0px rgba(0,0,0,0.70); */
+/*}*/
+
+#createCard {  
+    background: #34e89e;
+    background: -webkit-linear-gradient(left top, #34e89e, yellow); 
+    background: linear-gradient(to bottom right, #34e89e, yellow); 
+}
+
+#editCard {
+background: #24C6DC;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #514A9D, #24C6DC);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to bottom right, #514A9D, #24C6DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}

@@ -1,0 +1,256 @@
+<script>
+
+var selectType;
+
+//    Function for grabbing the logs of selected user(s). This function
+//    is needed to store the type of selection that was used to create the
+//    Log Data table so that it can restore itself if the user is not satisfied with
+//    how they have filtered their log file data and want to reset the avaiable logs
+function grabLogs(selectedSwitch){
+    
+    advSwitch = false;    //    needed to differentiate if Log Data Table source is from here or advance select
+    var multiUserSearch = $("#multiUserSearch").DataTable();
+    var selectSwitch;
+    if (selectedSwitch === "Y"){
+        selectSwitch = ".selected";
+        selectType = "Y";
+    }
+    else {
+        selectSwitch = ""
+        selectType = "N";
+    }
+
+    var databaseLogs = $('#databaseLogs').DataTable();
+    databaseLogs.clear().draw(false);
+    
+    multiUserSearch.rows(selectSwitch).every(function(){
+        var data = this.data();
+        var userData = new XMLHttpRequest();
+        var urlString = 'http://159.203.163.147/log/player/' + data[1];
+        userData.open("GET", urlString, true);
+        userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+
+        userData.onreadystatechange = function () {
+          if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+              var response = JSON.parse(userData.responseText);
+              for (var i=0; i<response.logs.length; ++i){
+                  var log = response.logs[i];
+                  
+                  var game_type;
+                  if (log.game_type == "TPP" ||
+                      log.game_type == "tpp")         game_type ="TPP" 
+                  else if (log.game_type == "TPO" ||
+                           log.game_type == "tpo")    game_type ="TPO" 
+                  else if (log.game_type == "vr" ||
+                           log.game_type == "VR")     game_type ="VR" 
+                  else                                game_type = log.game_type
+                  
+                  databaseLogs.row.add( ["", data[1], (i+1), game_type, log.lang_name, log.lang_version, log.score, log.logID, log.puzzles_attempted]).draw(false);
+              }
+          }
+          else {
+          }
+        }
+        
+        userData.send(null);
+
+    });
+    
+
+      if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
+      
+      $('html, body').animate({
+        scrollTop: $("#bigTab-data-one").offset().top
+      }, 1500);
+      
+      $('.logData-resizeButton').click();
+               
+}
+
+$(document).ready(function() {
+    
+    var multiUserSearch = $('#multiUserSearch').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "multi+shift",
+            selector: 'tr>td:nth-child(2), tr>td:nth-child(3), tr>td:nth-child(4), tr>td:nth-child(5), tr>td:nth-child(6)'
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 20,
+        buttons: [
+            {
+                extend: 'collection',
+                text: 'Load',
+                className: 'su-loadButton loadButton btn-warning',
+                buttons: [
+                    {
+                        text: 'Load All',
+                        className: 'loadAllButton specialLoad',
+                        //    Note: This function should be identical to what is called on page load for this table
+                        action: function ( ) {
+                            
+                            multiUserSearch.clear().draw(false);
+                            
+                            var logOverview = new XMLHttpRequest();
+                            logOverview.open("GET", 'http://159.203.163.147/logOverview', true);
+                            logOverview.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                            
+                            logOverview.onreadystatechange = function () {
+                                if(logOverview.readyState == XMLHttpRequest.DONE && logOverview.status == 200) {
+                                    logOverviewReq = JSON.parse(logOverview.responseText);
+                                
+                                    
+                                    var userData = new XMLHttpRequest();
+                                    userData.open("GET", 'http://159.203.163.147/playerList', true);
+                                    userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                                    
+                                    userData.onreadystatechange = function () {
+                                    if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+                                        var response = JSON.parse(userData.responseText);
+                                        userReq = response;
+                                        users = [];
+    
+                                        for (var i=0; i<response.players.length; ++i){
+                                          var player = response.players[i];
+                                          var totalScore = 0.0;
+                                          var numScores = 0.0;
+                                          var count = 0;
+                                          for (var j=0; j<logOverviewReq.logs.length; ++j){
+                                            
+                                            if (player.username == logOverviewReq.logs[j].username){
+                                                totalScore += logOverviewReq.logs[j].average;
+                                                numScores += 1.0;
+                                                count += logOverviewReq.logs[j].count;
+                                            }
+                                          } 
+                                          
+                                          if (count == 0) continue;
+    
+                                          var averageScore;
+                                          if (totalScore == 0 || numScores == 0){
+                                            averageScore = 0;
+                                          }
+                                          else {
+                                            averageScore = totalScore / numScores;
+                                          }
+                                          
+                                          var sex;
+                                          if      (player.sex == "m")   sex = "Male"
+                                          else if (player.sex == "f")   sex = "Female"
+                                          else if (player.sex == "t")   sex = "Transgender"
+                                          else if (player.sex == "o")   sex = "Other"
+                                          
+                                          
+                                          
+                                          multiUserSearch.row.add(["",player.username, count, Math.round(averageScore,1), sex, player.age]).draw(false);
+                                          users.push(player.username);
+                                        }
+                                        $('#quickSelectLoad').click();
+                                    }
+                                    else {}
+                                }    //    End of UserData response handler
+                                
+                                userData.send(null);
+                            }
+                            else {}
+                            }
+                            
+                            logOverview.send(null);
+                            
+                        }    //    End of Load All Function
+                    },
+                    {
+                        text: 'Load From Group',
+                        className: 'loadGroupButton',
+                        //    Load Groups logic done in userlog.ejs
+                        action: function ( ) {
+                            $('#loadGroupsModal').modal();
+                        }
+                    }
+                ]
+            },
+            {
+                extend:'colvis',
+                className: 'hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            },
+            {
+                extend: 'collection',
+                text: 'Select Logs',
+                className: 'selectionButton btn-success',
+                buttons: [
+                    {
+                        text: "Logs for Selected Users",
+                        className: 'useSelectedUsers',
+                        action: function() {
+                            if (multiUserSearch.rows('.selected').count() == 0){
+                                return;
+                            }
+                            else {
+                                grabLogs("Y");
+                            }
+                        }
+                    },
+                    {
+                        text: "Logs for All Users in Table",
+                        className: 'useSelectedUsers',
+                        action: function() {
+                            grabLogs("N");
+                        }
+                    },
+                    {
+                        text: 'Clear Selected Users',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            multiUserSearch.rows().deselect();
+                        }
+                    },
+                ]
+            }
+        ],
+    } );
+    
+    
+    //  Hidden buttons like this allow multiple tables to resize themselves
+    //  When various pieces of data are added to make sure everything is responsive     
+    new $.fn.dataTable.Buttons (multiUserSearch, {
+        buttons: [ 
+            {
+              text: 'Resize',
+              className: 'resizeButton hide secondSetBtn',
+              action: function () {
+                  multiUserSearch.responsive.recalc();
+              }
+            }
+        ]
+    });
+    
+    multiUserSearch.buttons( 1, null ).container().appendTo(
+        multiUserSearch.table().container()
+    );
+    
+} );
+</script>

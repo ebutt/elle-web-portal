@@ -1,0 +1,558 @@
+<% include partials/common/drop2beforeTitle %>
+  <title>Create a Term</title>
+  <link rel="stylesheet" href="../../stylesheets/language/createTerm.css">
+
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="container pageContent">
+    
+  <div class = "content-form">
+    <h2 class="titleHeader">Create a Term</h2>
+    <div class="text-center">
+      <a href="/languages/editMenu" class="returnLink">Return to Edit Menu</a>
+    </div>
+    <hr>
+    <div class="row text-center">
+      <div class="col-12">
+        <h3 class="currentDeclare">Current Language:</h4>
+        <h3 class="currentValue"><span id="currentLanguage"></span></h3>
+      </div>
+    </div>
+    
+    <form id="upload-form" method="POST" enctype="multipart/form-data" accept-charset="UTF-8">
+
+      <input id="hiddenLang" type="text" class="hide" name="lang">
+      <div id="termScroll" class="form-group form-term-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for ="termID" class="control-label">Term Name</label>
+        <span id="termNote"> (locks after creation)</span>
+        <input type="text" class="form-control" id="termID" placeholder="term" name="term">
+        <small class="form-control-feedback"></small>
+      </div>
+      
+      <div id="transScroll" class="form-group form-trans-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for ="transID" class="control-label">Translation Name</label>
+        <input type="text" class="form-control" id="transID" placeholder="translation" name="translation">
+        <small class="form-control-feedback"></small>
+      </div>
+      
+      <div id="tagScroll" class="form-group form-trans-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for ="termTag" class="control-label">Term Tag</label>
+        <input type="text" class="form-control" id="termTag" placeholder="term tag" name="tag">
+        <small class="form-control-feedback"></small>
+      </div>
+      
+      <input id="hiddenDifficulty" type="text" name="difficulty" class="hide">
+      <div id="diffScroll" class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for="difficulty" class="control-label">Difficulty</label>
+        <select class="form-control" id="difficulty">
+          <option value="9" selected ></option>
+          <option value="0">Easy</option>
+          <option value="1">Medium</option>
+          <option value="2">Hard</option>
+        </select>
+      </div>
+      
+      <div id="imageScroll" class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for="imageButton" class="control-label">Image Upload (.png)</label>
+        <button id="imageButton" type="button" class="btn btn-danger btn-block" onclick="document.getElementById('imageFile').click()">Upload Image</button>
+        <div class="form-group inputDnD">
+          <label class="sr-only" for="imageFile">File Upload</label>
+          <input type="file" class="form-control-file font-weight-bold" name="file" id="imageFile" accept=".png" onchange="readImageURL(this)" data-title="Or Drag and Drop a File">
+        </div>
+      </div>
+      
+      <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 pBox">
+        <label for="imagePreview" class="control-label">Image Preview</label>
+        <div class="previewBox text-center">
+          <img id="imagePreview" src="../../assets/img/icons/imgPlaceholder.png">
+        </div>
+      </div>
+      
+      <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+        <button class="btn btn-large" id="audioButton">Need Help with .ogg Files?</button>
+      </div>
+    
+      <div id="termAudioScroll" class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for ="termFile" class="control-label">Term Audio Upload (.ogg)</label>
+        <button type="button" class="btn btn-info btn-block" onclick="document.getElementById('termFile').click()">Upload Term Audio</button>
+        <div class="form-group inputDnD">
+          <label class="sr-only" for="termFile">File Upload</label>
+          <input type="file" class="form-control-file font-weight-bold" name="file" id="termFile" accept=".ogg" onchange="readTermAudioURL(this)" data-title="Or Drag and Drop a File">
+          <audio controls id="termAudio">
+          </audio>
+        </div>
+      </div>
+      
+      <div id="transAudioScroll" class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+        <label for ="transFile" class="control-label">Translation Audio Upload (.ogg)</label>
+        <button type="button" class="btn btn-info btn-block" onclick="document.getElementById('transFile').click()">Upload Term Audio</button>
+        <div class="form-group inputDnD">
+          <label class="sr-only" for="transFile">File Upload</label>
+          <input type="file" class="form-control-file font-weight-bold" name="file" id="transFile" accept=".ogg" onchange="readTransAudioURL(this)" data-title="Or Drag and Drop a File">
+          <audio id="transAudio" controls>
+          </audio>
+        </div>
+      </div>
+      
+      <div class="col-10 offset-1 col-md-6 offset-md-3 text-center editTermBox">
+        <div class="form-group">
+          <button class ="btn btn-success  btn-lg formButton" id="validateButton" type="button">Create Term</button>
+          <button class ="hide" id="submitButton" type="submit"></button>
+        </div>
+      </div>
+    </form>
+    
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Warning: Error(s)     
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="modal-static-text text-center">This Term cannot be submitted until the following Errors are resolved:</p>
+            <ul id="modal-foundErrors" class=""></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modalBtn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal" id="submitInfo" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Submit Notification
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group text-center">
+              <h4 id="submitText"></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade" id="audioModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">.OGG Audio File Help</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="audioText">
+              In order to run inside the Unreal Engine and be heard in the ELLE Endless Runner,
+            audio files have to be of type .ogg
+            </p>
+            <hr class="audioModalSpacer">
+            <p class="audioText">
+              If you are not sure how to generate an .OGG file, we recommend you
+              <a href="http://www.audacityteam.org/download/">Download Audacity</a>
+            </p>
+            <hr class="audioModalSpacer">
+            <p class="audioText">Once you have Audacity installed (or any similar program), import your desired audio track under File -> Import</p>
+            <img id="audacityTutorial1" src="../../assets/img/Audacity1.PNG">
+            <hr class="audioModalSpacer">
+            <p class="audioText">After you have the track imported, simply go to Save Other -> Export as OGG.</p>
+            <hr class="audioModalSpacer">
+            <img id="audacityTutoria2" src="../../assets/img/Audacity2.PNG">
+            <hr class="audioModalSpacer">
+            <p class="audioText">Then use the new OGG file for Term or Translation audio!</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modalBtn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<% include partials/common/timeoutLogin %>
+
+<div class="pageEnder"></div>
+
+<% include partials/common/drop2footer %>
+<% include partials/common/auth %>
+<script>
+
+function disableCache(){
+  var d = new Date();
+  return d.getTime();
+}
+
+function removeSpaces (string){
+  var str = string.replace(/\s/g, '');
+  return str;
+}
+
+function getQueryVariable(variable){
+   var query = window.location.search.substring(1);
+   var vars = query.split("&");
+   for (var i=0;i<vars.length;i++) {
+      var pair = vars[i].split("=");
+      if(pair[0] == variable){return pair[1];}
+   }
+   return(false);
+}
+
+function checkValidTerm(input){
+  var pattern = new RegExp(/[.~`!#$%\^&*+=\-\[\]\;,/{}|\\":<>\?]/); //unacceptable chars
+    if (pattern.test(input)) {
+        return false;
+    }
+    return true;
+}
+
+function checkValidWord(input){
+  var pattern = new RegExp(/[0123456789 .~`!#$%\^&*+=\-\[\]\;,/{}|\\":<>\?]/); //unacceptable chars
+    if (pattern.test(input)) {
+        return false;
+    }
+    return true;
+}
+
+$(function() {
+  
+  checkToken();
+  
+  
+  $('#hasToken').change(function(){
+    <% include partials/common/pendingAdmin %>
+    
+    $('#currentLanguage').html(decodeURI(getQueryVariable("lang")));
+    $("#hiddenLang").val(decodeURI(getQueryVariable("lang")));
+    $('.returnLink').attr("href", "/languages/editMenu/selectTerm?lang="+getQueryVariable("lang"));
+    $('#currentTerm').html(decodeURI(getQueryVariable("term")));
+
+  });
+  
+  
+  $('#termID').keypress(function(event) {
+    if (event.keyCode == 13 || event.which == 13) {
+        $('#transID').focus();
+        event.preventDefault();
+    }
+  });
+  $('#transID').keypress(function(event) {
+    if (event.keyCode == 13 || event.which == 13) {
+        $('#termTag').focus();
+        event.preventDefault();
+    }
+  });
+  $('#termTag').keypress(function(event) {
+    if (event.keyCode == 13 || event.which == 13) {
+        $('#difficulty').focus();
+        event.preventDefault();
+    }
+  });
+  $("#difficulty").change(function(){
+    $("#hiddenDifficulty").val($("#difficulty").val());
+  });
+  
+  $('#validateButton').click(function(){
+    
+    
+    //  Error Handling is done through a stack, starting with the inputs 
+    //  on the bottom of the page and ending at the top input (the term name)
+    //  Any found errors will be added to the eventual error dialog message,
+    //  and the page will automatically scroll to the top element with a found Error
+    
+    
+    
+    var errorStack = [];
+    var scrollID = "";
+    $('#modal-foundErrors').empty();
+    
+    // Translation Audio Checks
+    if ($('#transFile').get(0).files.length === 0 ) {
+      if (!$("#transFile").hasClass('onServer')){
+        errorStack.push("trans:audio404");
+        scrollID = "#transAudioScroll";
+      }
+    }
+    else if ($('#transFile').hasClass("invalid-ext")){
+      errorStack.push("trans:audio406");
+      scrollID = "#transAudioScroll";
+    }
+    
+    // Term Audio Checks
+    if ($('#termFile').get(0).files.length ===0) {
+      if(!$("#termFile").hasClass('onServer')){
+        errorStack.push("term:audio404");
+        scrollID = "#termAudioScroll";
+      }
+    }
+    else if ($('#termFile').hasClass("invalid-ext")){
+      errorStack.push("term:audio406");
+      scrollID = "#termAudioScroll";
+    }
+    
+    // Image Checks
+    if ($('#imageFile').get(0).files.length == 0) {
+      if (!$('#imageFile').hasClass('onServer') ){
+        errorStack.push("image404");
+        scrollID = "#imageScroll";
+      }
+    }
+    else if ($('#imageFile').hasClass("invalid-ext")){
+      errorStack.push("image406");
+      scrollID = "#imageScroll";
+    }
+    
+    
+    // Difficulty Checks
+    if ($("#difficulty").val() == 9){
+      errorStack.push("difficulty404");
+      scrollID = $("#diffScroll");
+    }
+    
+    // Tag Checks
+    if ($('#termTag').val().length == 0){
+      errorStack.push("tag404");
+      scrollID = "#tagScroll";
+    }
+    else if ($("#termTag").val().length > 20){
+      errorStack.push("tag413");
+      scrollID = "#tagScroll";
+    }
+    else if (checkValidWord($("#termTag").val()) == false){
+      errorStack.push("tag406");
+      scrollID = "#tagScroll";
+    }
+    
+    // Translation Checks
+    if ($('#transID').val().length == 0){
+      errorStack.push("trans:Term404");
+      scrollID = "#transScroll";
+    }
+    else if ($("#transID").val().length > 50){
+      errorStack.push("trans:Term413");
+      scrollID = "#transScroll";
+    }
+    else if (checkValidTerm($("#transID").val()) == false){
+      errorStack.push("trans:Term406");
+      scrollID = "#transScroll";
+    }
+    
+    // Term Checks    
+    if ($('#termID').val().length == 0){
+      errorStack.push("term:Term404");
+      scrollID = "#termScroll";
+    }
+    else if ($("#termID").val().length > 50){
+      errorStack.push("term:Term413");
+      scrollID = "#termID";
+    }
+    else if (checkValidTerm($("#termID").val()) == false){
+      errorStack.push("term:Term406");
+      scrollID = "#termScroll";
+    }
+    
+    if (errorStack.length != 0){
+      while (errorStack.length != 0){
+        var error = errorStack.pop();
+        // console.log("ERROR: " + error);
+        var errorText; 
+        switch(error){
+          case "term:Term404":
+            errorText="Term is empty";
+            break;
+          case "term:Term406":
+            errorText="Term has invalid chars";
+            break;
+          case "term:Term413":
+            errorText="Term exceeded max of 50 chars";
+            break;
+          case "trans:Term404":
+            errorText="Translation is empty";
+            break;
+          case "trans:Term406":
+            errorText="Translation has invalid chars";
+            break;
+          case "trans:Term413":
+            errorText="Translation exceed max of 50 chars";
+            break;
+          case "tag404":
+            errorText = "Tag is empty";
+            break;
+          case "tag406":
+            errorText = "Tag has invalid chars";
+            break;
+          case "tag413":
+            errorText = "Tag exceeded max of 20 chars";
+            break;
+          case "difficulty404":
+            errorText = "Difficulty is empty";
+            break;
+          case "image404":
+            errorText="Image is empty";
+            break;
+          case "image406":
+            errorText="Image must be of type .png";
+            break;
+          case "term:audio404":
+            errorText="Term Audio is empty";
+            break;
+          case "term:audio406":
+            errorText="Term Audio must be of type .ogg";
+            break;
+          case "trans:audio404":
+            errorText="Translation Audio is empty";
+            break;
+          case "trans:audio406":
+            errorText="Translation Audio must be of type .ogg";
+            break;
+          default:
+            errorText="An unknown error has prevented the page from submitting."
+            break;
+        }
+        
+        var li = document.createElement('li');
+        var textNode = document.createTextNode(errorText);
+        li.appendChild(textNode);
+        document.getElementById("modal-foundErrors").appendChild(li);
+        
+      }
+      
+      $('#errorModal').modal();
+      $('html, body').animate({
+        scrollTop: $(scrollID).offset().top
+      }, 750);
+    }
+    else {
+        
+        $("#submitText").html("Submitting Term...");
+        $("#submitInfo").modal();
+        setTimeout(function(){
+          $("#submitButton").click();
+        }, 500);
+    }
+
+  });
+
+  //  Have to manually extract the JWT so that it can be ued in the FormData submission 
+  var JWTstring = "JWT " + sessionStorage.getItem('ELLE-JWT-token');
+
+  $('#upload-form').submit(function(e) {
+      e.preventDefault();
+      var form_data = new FormData($('#upload-form')[0]);
+      var JWTstring = "JWT " + sessionStorage.getItem('ELLE-JWT-token');
+      $.ajax({
+            type: 'POST',
+            url: 'http://159.203.163.147/upload',
+            headers: {"Authorization": JWTstring},
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            async: false,
+            success: function(){
+                window.location = "/languages/editMenu/selectTerm?lang="+getQueryVariable("lang")
+            },
+            error: function(msg) {
+                var li = document.createElement('li');
+                var textNode = document.createTextNode(msg.responseText);
+                li.appendChild(textNode);
+                document.getElementById("modal-foundErrors").appendChild(li);
+                $("#submitInfo").modal('toggle');
+                $("#errorModal").modal();
+            }
+      });
+    
+    })
+    
+    $('#audioButton').click(function(e) {
+      e.preventDefault();
+      
+      $("#audioModal").modal();
+    })
+    
+});
+
+</script>
+<script>
+function readTermAudioURL(input) {
+  
+  if (input.files && input.files[0]) {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#termFile").removeClass('onServer');
+      let fileData = e.target.result;
+      let fileName = input.files[0].name;
+      var ext = fileName.match(/\.([^\.]+)$/)[1];
+      if (ext == "ogg"){
+        $('#termFile').removeClass('invalid-ext');
+        $('#termAudio').attr('src', e.target.result);
+      }
+      else {
+        $('#termFile').addClass('invalid-ext');
+      }
+      input.setAttribute("data-title", fileName);
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function readTransAudioURL(input) {
+  
+  if (input.files && input.files[0]) {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#transFile").removeClass('onServer');
+      let fileData = e.target.result;
+      let fileName = input.files[0].name;
+      var ext = fileName.match(/\.([^\.]+)$/)[1];
+      if (ext == "ogg"){
+        $('#transFile').removeClass('invalid-ext');
+        $('#transAudio').attr('src', e.target.result);
+      }
+      else {
+        $('#transFile').addClass('invalid-ext');
+      }
+      input.setAttribute("data-title", fileName);
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function readImageURL(input) {
+  
+  if (input.files && input.files[0]) {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#imageFile").removeClass('onServer');
+      let imgData = e.target.result;
+      let imgName = input.files[0].name;
+      input.setAttribute("data-title", imgName);
+      var ext = imgName.match(/\.([^\.]+)$/)[1];
+      if (ext == "png"){
+        $('#imagePreview').attr('src', e.target.result);
+        $('#imageFile').removeClass('invalid-ext');
+      }
+      else {
+        $('#imagePreview').attr('src', '../../assets/img/icons/imgError.png');
+        $('#imageFile').addClass('invalid-ext');
+      }
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+</script>
+    

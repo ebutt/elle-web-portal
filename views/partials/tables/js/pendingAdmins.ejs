@@ -1,0 +1,221 @@
+<script>
+$(document).ready(function() {
+    var pendingAdmins = $('#pendingAdmins').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"Btip>',
+        select: {
+            style: "multi+shift",
+            selector: 'tr>td:nth-child(2), tr>td:nth-child(3), tr>td:nth-child(4), tr>td:nth-child(5), tr>td:nth-child(6)'
+
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'logData-resizeButton resizeButton secondSetBtn hide',
+              action: function () {
+                  pendingAdmins.responsive.recalc();
+              }
+            },
+            {
+                extend: 'collection',
+                text: 'Approve',
+                className: 'selectionButton btn-success',
+                buttons: [
+                    {
+                        text: "Approve All Selected",
+                        className: 'approveAllSelectedButton',
+                        action: function() {
+                            
+                            pendingAdmins.rows('.selected').every(function(){
+                                var data = this.data();
+                                var approveJSON = {
+                                    'username': data[2]
+                                };
+                                
+                                var approveJSONreq = JSON.stringify(approveJSON);
+
+                                var approveAll = new XMLHttpRequest();
+                                approveAll.open("POST", 'http://159.203.163.147/approveAdmin', true);
+                                approveAll.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                                approveAll.setRequestHeader('Content-Type', 'application/json');
+                                
+                                //  What to do if the Auth passes/fails
+                                approveAll.onreadystatechange = function () {
+                                  if(approveAll.readyState == XMLHttpRequest.DONE && approveAll.status == 200) {
+
+                                  }
+                                  else {
+                                  }
+                                }
+                                
+                                
+                                //  Send the Auth request
+                                approveAll.send(approveJSONreq);
+                            });
+                            
+                            pendingAdmins.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Approve All',
+                        className: 'approveAllButton',
+                        action: function ( ) {
+                            pendingAdmins.rows().every(function(){
+                                var data = this.data();
+                                var approveJSON = {
+                                    'username': data[2]
+                                };
+                                
+                                var approveJSONreq = JSON.stringify(approveJSON);
+
+                                var approveAll = new XMLHttpRequest();
+                                approveAll.open("POST", 'http://159.203.163.147/approveAdmin', true);
+                                approveAll.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                                approveAll.setRequestHeader('Content-Type', 'application/json');
+                                
+                                //  What to do if the Auth passes/fails
+                                approveAll.onreadystatechange = function () {
+                                  if(approveAll.readyState == XMLHttpRequest.DONE && approveAll.status == 200) {
+
+                                  }
+                                  else {}
+                                }
+                                
+                                
+                                //  Send the Auth request
+                                approveAll.send(approveJSONreq);
+                            });
+                            
+                            pendingAdmins.rows().remove().draw(false);
+                            
+                            
+                        }
+                    }
+                ]
+            },
+            {
+                extend: 'collection',
+                text: 'Selection',
+                className: 'selectionButton btn-warning',
+                buttons: [
+                    {
+                        text: 'Clear Selections',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            pendingAdmins.rows().deselect();
+                        }
+                    },
+                    {
+                        text: "Select All",
+                        className: 'selectAllButton',
+                        action: function() {
+                            pendingAdmins.rows().select()
+                        }
+                    }
+                ]
+            },
+            {
+                extend: 'collection',
+                text: 'Deny',
+                className: 'selectionButton btn-danger',
+                buttons: [
+                    {
+                        text: "Deny Selected",
+                        className: 'denySelectedButton',
+                        action: function() {
+                            
+                            pendingAdmins.rows('.selected').every(function(){
+                                var data = this.data();
+                                var denyJSON = {
+                                    'username': data[2]
+                                };
+                                
+                                var denyJSONreq = JSON.stringify(denyJSON);
+
+                                var denyAll = new XMLHttpRequest();
+                                denyAll.open("DELETE", 'http://159.203.163.147/denyAdmin', true);
+                                denyAll.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                                denyAll.setRequestHeader('Content-Type', 'application/json');
+                                
+                                //  What to do if the Auth passes/fails
+                                denyAll.onreadystatechange = function () {
+                                  if(denyAll.readyState == XMLHttpRequest.DONE && denyAll.status == 200) {
+
+                                  }
+                                  else {}
+                                }
+                                
+                                
+                                //  Send the Auth request
+                                denyAll.send(denyJSONreq);
+                            });
+                            
+                            pendingAdmins.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Deny All',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            pendingAdmins.rows().every(function(){
+                                var data = this.data();
+                                var denyJSON = {
+                                    'username': data[2]
+                                };
+                                
+                                var denyJSONreq = JSON.stringify(denyJSON);
+
+                                var denyAll = new XMLHttpRequest();
+                                denyAll.open("DELETE", 'http://159.203.163.147/denyAdmin', true);
+                                denyAll.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                                denyAll.setRequestHeader('Content-Type', 'application/json');
+                                
+                                //  What to do if the Auth passes/fails
+                                denyAll.onreadystatechange = function () {
+                                  if(denyAll.readyState == XMLHttpRequest.DONE && denyAll.status == 200) {
+
+                        
+                                  }
+                                  else {}
+                                }
+                                
+                                
+                                //  Send the Auth request
+                                denyAll.send(denyJSONreq);
+                            });
+                            
+                            pendingAdmins.rows().remove().draw(false);
+                            
+                            
+                        }
+                    }
+                ]
+            }
+        ],
+    } );
+
+} );
+</script>

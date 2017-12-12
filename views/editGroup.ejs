@@ -1,0 +1,325 @@
+<% include partials/common/drop2beforeTitle %>
+  <title>Edit a Group</title>
+  <link rel="stylesheet" href="../../stylesheets/assets/editGroup.css">
+<% include partials/tables/includes/drop2allTableIncludes %>
+  <link rel="stylesheet" href="../../assets/css/jquery.typeahead.min.css">
+  <script type="text/javascript" src="../../assets/js/vindicate.js"></script>
+  <script src="../../assets/js/jquery.typeahead.min.js" type="text/javascript"></script>
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+  <div class="container pageContent">
+      
+      <div class="content-form">
+          <h2 class="titleHeader"><span id="titleWord"></span></h2>
+          <div class="text-center menuSpacer">
+            <a href="/assets/myGroups" class="returnLink">Return to My Groups</a>
+          </div>
+          <hr>
+            
+          <form id="form-groupInfo">
+            <div class="form-group form-group-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+              <label for ="groupName" class="control-label">Group Name</label>
+              <hr class="noteSpacer">
+              <span id="lockNote" class="groupNote hide"> (locks after creation)</span>
+              <input type="text" class="form-control" id="groupName" placeholder="group name" data-vindicate="required|format:groupName">
+              <small class="form-control-feedback"></small>
+            </div>
+          </form>
+          
+          <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+              <h3 class="title-singleDT">Current Group Members</h3>
+              <% include partials/tables/html/editGroup %>
+            </div>
+
+            <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+              <label for ="addNewMember" class="control-label">Add a New Member</label>
+              <hr class="existWarningSpacer">
+              <h5 class="existWarning">(only existing users can be added)</h5>
+              
+              <form id="form-memberAdd" name="form-memberAdd">
+                <div class="typeahead__container">
+                  <div class="typeahead__field">
+                    <span class="typeahead__query">
+                        <input id="addNewMember" class="js-typeahead-memberSearch" name="langSearch[query]" type="search" placeholder="Add player" autocomplete="off">
+                    </span>
+                    <span class="typeahead__button">
+                        <button type="submit" id="typeaheadSubmitButton">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </span>
+                  </div>
+                </div>
+              </form>
+            </div>
+     
+      </div>
+      
+      <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Warning: Error(s)     
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p class="modal-static-text text-center">This Group cannot be submitted until the errors are resolved:</p>
+            <ul id="modal-foundErrors" class=""></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modalBtn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button id="quickSelectLoad" type="button" class="hide"></button>
+    
+    <div class="modal" id="submitInfo" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Submit Notification
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group text-center">
+              <h4 id="submitText"></h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+    <% include partials/common/timeoutLogin %>
+  </div>
+
+<% include partials/tables/js/editGroup %>
+<% include partials/common/drop2footer %>
+<% include partials/common/auth %>
+<script>
+  var myGroups = [];
+  var players = [];
+
+$('form').vindicate("init");
+  //  btn-group causes graphical errors when the screen gets small
+function checkOtherInputs() {
+  if ( $('#groupName').hasClass('form-control-success')
+      // && ($('#groupRadio1').is(':checked') || $('#groupRadio2').is(':checked'))
+     ) {
+         $('.submitButton').removeAttr('disabled');
+         $('#createFormButton').removeAttr('disabled');
+         $('#updateFormButton').removeAttr('disabled');
+  }
+  else {
+    $('#submitFormButton').attr('disabled', 'disabled');
+  }
+}
+
+function getQueryVariable(variable){
+   var query = window.location.search.substring(1);
+   var vars = query.split("&");
+   for (var i=0;i<vars.length;i++) {
+      var pair = vars[i].split("=");
+      if(pair[0] == variable){return pair[1];}
+   }
+   return(false);
+}
+  
+$(function() {
+  
+  var startMembers;
+  
+  $('.submitButton').attr('disabled', true);
+
+  
+  if (getQueryVariable("group") == false){
+    $('#createFormButton').removeClass("hide");
+    $('#createWarning').removeClass("hide");
+    $('#titleWord').html("Create a Group");
+    $("#lockNote").removeClass("hide");
+  }
+  else {
+    $('#groupName').val(decodeURI(getQueryVariable("group")));
+    $('#groupName').prop('disabled', true);
+    $('.submitButton').removeAttr('disabled');
+    $('#titleWord').html("Edit a Group")
+    $('#updateFormButton').removeClass("hide");
+    
+    
+  }
+  
+  checkToken();
+  
+  var editGroup = $('#editGroup').DataTable();
+  
+  $('#hasToken').change(function(){
+    
+    <% include partials/common/pendingAdmin %>
+    
+    var getPlayers = new XMLHttpRequest();
+    getPlayers.open("GET", 'http://159.203.163.147/playerList', true);
+    getPlayers.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    
+    getPlayers.onreadystatechange = function () {
+      if(getPlayers.readyState == XMLHttpRequest.DONE && getPlayers.status == 200) {
+        var response = JSON.parse(getPlayers.responseText);
+        for (var i=0; i<response.players.length; ++i){
+          var player = response.players[i];
+          players.push(player.username);
+        }
+        $("#quickSelectLoad").click();
+      }
+      else {}
+    }
+    
+    getPlayers.send(null);
+    
+    
+    
+    var groups = new XMLHttpRequest();
+    groups.open("GET", 'http://159.203.163.147/group', true);
+    groups.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    
+    groups.onreadystatechange = function () {
+      if(groups.readyState == XMLHttpRequest.DONE && groups.status == 200) {
+        var response = JSON.parse(groups.responseText);
+        for (var i=0; i<response.groups.length; ++i){
+          var group = response.groups[i];
+          if (group.admin == sessionStorage.getItem('ELLE-author')){
+            myGroups.push(group.groupName);
+          }
+          
+        }
+      }
+      else {}
+    }
+    
+    groups.send(null);
+
+    if (getQueryVariable("group") != false){
+      
+      var getMembers = new XMLHttpRequest();
+      var urlString = 'http://159.203.163.147/groupMember/'+getQueryVariable("group");
+      getMembers.open("GET", urlString, true);
+      getMembers.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      
+      getMembers.onreadystatechange = function () {
+        if(getMembers.readyState == XMLHttpRequest.DONE && getMembers.status == 200) {
+            var response = JSON.parse(getMembers.responseText);
+            startMembers = response;
+            for (var i=0; i<response.members.length; ++i){
+              var member = response.members[i];
+              editGroup.row.add(["", member.username]).draw(false);
+            }
+            
+        }
+        else {
+          
+        }
+      }
+      
+      getMembers.send(null);
+    }
+  });
+  
+  
+  $(".btn-group").removeClass("btn-group");
+  
+  $("#quickSelectLoad").click(function(){
+
+      
+      $.typeahead({
+        input: '.js-typeahead-memberSearch',
+        minLength: 1,
+        maxItem: 4,
+        searchOnFocus: true,
+        dynamic: true,
+        delay: 100,
+        offset: true,
+        accent: true,
+        blurOnTab: false,
+        order: "asc",
+      
+        source: {
+            data: players
+          },
+          callback: {
+              onInit: function (node) {
+              }
+          }
+      });
+      
+    });
+  
+  $('#form-memberAdd').submit(function(e) {
+    e.preventDefault();
+    var player = $(".js-typeahead-memberSearch").val();
+    var alreadyPresent = false;
+    
+    if (players.indexOf(player) != -1){
+      
+      editGroup.rows().every(function() {
+        var data = this.data();
+        if (player == data[1]) {
+          alreadyPresent = true;
+          return;
+        }
+      });
+      if (!alreadyPresent){
+        editGroup.row.add(["", player]).draw(false);
+      }
+    }
+    $(".js-typeahead-memberSearch").val("");
+    
+  });
+
+  $('#groupName').change(function(){
+    //  Reset the validation status and run it again
+    $('.form-group-group').removeClass('has-success has-warning has-danger');
+    $('#groupName').removeClass('form-control-success form-control-warning form-control-danger');
+    $("#form-groupInfo").vindicate("validate");
+    checkOtherInputs();
+  });
+  
+  $('#groupName').keypress(function(event) {
+    if (event.keyCode == 13 || event.which == 13) {
+        $('.js-typeahead-memberSearch').focus();
+        $('html, body').animate({
+          scrollTop: $(".js-typeahead-memberSearch").offset().top
+        }, 1000);
+        event.preventDefault();
+    }
+  });
+    
+
+
+    
+} );
+
+
+
+$('#form-groupInfo').submit(function(event){
+  event.preventDefault();
+});
+
+$('#cancelButton').click(function(){
+  window.location = "/assets/myGroups";
+})
+
+
+
+
+
+
+
+
+</script>
+    

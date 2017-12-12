@@ -1,0 +1,30 @@
+<script>
+  function checkToken() {
+    var checkToken = new XMLHttpRequest();
+    checkToken.open("GET", 'http://159.203.163.147/test2', true);
+    checkToken.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    
+    //  What to do if the Auth passes/fails
+    checkToken.onreadystatechange = function () {
+      if(checkToken.readyState == XMLHttpRequest.DONE && checkToken.status == 200) {
+            // Request finished. Do processing here.
+            // Just check if the token is still valid, login-modal with handle real auth
+        $('#hasToken').val("true").trigger('change');
+      }
+      else if (checkToken.status == 500) {
+        $('#login-modal').modal({
+          backdrop: 'static'
+        });
+      }
+      else if (checkToken.status == 403){
+        window.location = "/";
+      }
+      else {}
+    }
+    
+    //  Send the Auth request
+    checkToken.send(null);
+  }
+    
+</script>
+

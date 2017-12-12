@@ -1,0 +1,73 @@
+<script>
+$(document).ready(function() {
+    var editPermissions = $('#editPermissions').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "multi+shift"
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            {
+                text: 'Resize',
+                className: 'sal-resizeButton resizeButton resizePermButton secondSetBtn hide',
+                action: function () {
+                    editPermissions.responsive.recalc();
+                }
+            },
+            {
+                extend: 'collection',
+                text: 'Selection',
+                className: 'uld-selectionButton selectionButton',
+                buttons: [
+                    {
+                        text: 'Clear Selections',
+                        className: 'uld-clearButton clearButton',
+                        action: function ( ) {
+                            editPermissions.rows().deselect();
+                        }
+                    },
+                    {
+                        text: 'Remove Selections',
+                        className: 'uld-removeSelectButton removeSelectButton',
+                        action: function ( ) {
+                            editPermissions.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Remove All Not Selected',
+                        className: 'uld-deleteNotSelectedButton deleteNotSelectButton',
+                        action: function ( ) {
+                            editPermissions.rows({selected: false}).remove().draw(false);
+                            editPermissions.rows().deselect();
+                        }
+                    }
+                ]
+            }
+            
+        ]
+    } );
+} );
+</script>

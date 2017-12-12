@@ -1,0 +1,778 @@
+<% include partials/common/beforeTitle %>
+  <title>User Log Data</title>
+  <% include partials/tables/includes/allTableIncludes %>
+  <script src="../assets/js/jszip.min.js" type="text/javascript"></script>
+  <script src="../assets/js/FileSaver.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="stylesheets/user/userlog.css">
+  <link rel="stylesheet" href="../assets/css/jquery.typeahead.min.css">
+  <script src="../assets/js/jquery.typeahead.min.js" type="text/javascript"></script>
+  
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="pageContent">
+  
+    <!--I chose to use a hiddenUserTable to store the users for AdvanceSelect... not the cleanest solution-->
+    <!--but one that has one big initial load at page start but less time after filter execution-->
+    <% include partials/tables/html/hiddenUserTable %>
+    <div class="content-text">
+      <h2 class="titleHeader">User Log Data</h2>
+      <div class="text-center">
+        <a href="/home" class="returnLink">Return to Main Menu</a>
+      </div>
+      <hr>
+      <h5 class="titleComment">Any selected user(s) will have their log files shown in the 'Log Data Table' below</h5>
+      <hr>
+      <div class="bigAccordionTab" id="selectionMenuTab">
+        <input id="bigTab-select-one" type="checkbox" name="bigTab-select" class="tabInput" checked>
+        <label for="bigTab-select-one" class="bigAccordionTabLabel selectLabel">Selection Menu</label>
+        <div class="bigAccordionTab-content">
+          
+          <div class="nav-tabs-navigation">
+            <div class="nav-tabs-wrapper">
+              <ul id="tabs" class="nav nav-tabs" role="tablist">
+                <li class="nav-item quick-select">
+                  <a class="nav-link active" data-toggle="tab" href="#quickSelect" role="tab">Quick Select</a>
+                </li>
+                <li class="nav-item table-select">
+                  <a class="nav-link" data-toggle="tab" href="#tableSelect" role="tab">Table Select</a>
+                </li>
+                <li class="nav-item table-select">
+                  <a class="nav-link" data-toggle="tab" href="#advancedSelect" role="tab">Advanced Select</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div id="my-tab-content" class="tab-content">
+      
+            <div class="tab-pane active text-center" id="quickSelect" role="tabpanel">
+              <div class="col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+                <form id="form-userSearch" name="form-userSearch">
+                  <div class="typeahead__container">
+                    <div class="typeahead__field">
+                      <span class="typeahead__query">
+                          <input class="js-typeahead-userSearch" name="js-typeahead-userSearch" type="search" placeholder="Search" autocomplete="off">
+                      </span>
+                      <span class="typeahead__button">
+                          <button type="submit" id="typeaheadSubmitButton">
+                              <i class="typeahead__search-icon"></i>
+                          </button>
+                      </span>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            
+            <div class="tab-pane" id="tableSelect" role="tabpanel">
+              <% include partials/tables/html/multiUserSearch.ejs %>
+            </div>
+            
+            <div class="tab-pane" id="advancedSelect" role="tabpanel">
+              <% include partials/tables/html/userAdvanceSearch.ejs %>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-table">
+      <div class="row">
+        <div class="col-12">
+          <h2 class="titleHeader">Data Log Table</h2>
+          <hr>
+          <div class="bigAccordionTab">
+            <input id="bigTab-data-one" type="checkbox" name="bigTab-data" class="tabInput">
+            <label for="bigTab-data-one" class="bigAccordionTabLabel logsLabel">Log Data Table</label>
+            <div class="bigAccordionTab-content">
+              <h5 class="titleComment">
+                <strong>NOTE:</strong> Only <em><u>visible</u></em> entries will be
+                exported to file... filtered out and/or removed entries will not!
+              </h5>
+              <% include partials/tables/html/databaseLogs %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pageEnder"></div>
+    <button id="quickSelectLoad" type="button" class="hide"></button>
+    
+    <div class="modal fade" id="dataSortModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">
+              Filter Data
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <label id="typeSelectLabel" class="modalLabel" for="typeSelect">Select a Game Type</label>
+                <select class="form-control modalInput" id="typeSelect">
+                  <option value="0">Any</option>
+                  <option value="1">VR</option>
+                  <option value="2">TPP</option>
+                  <option value="3">TPO</option>
+                  <option value="4">VR & TPP</option>
+                  <option value="5">TPP & TPO</option>
+                </select>
+              </div>
+              
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <div class="row">
+                  <div class="col-6">
+                    <label id="minEntryNumLabel" class="modalLabel" for="minEntryNum">Min Entry #</label>
+                    <input id="minEntryNum" class="form-control modalInput" type="number" min="1">
+                  </div>
+                  <div class="col-6">
+                    <label id="maxEntryNumLabel" class="modalLabel" for="maxEntryNum">Max Entry #</label>
+                    <input id="maxEntryNum" class="form-control modalInput" type="number" min="1">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <div class="row">
+                  <div class="col-12">
+                    <label id="minVersionLabel" class="modalLabel" for="minVersionNum">Min Version Number</label>
+                    <input id="minVersion" class="form-control modalInput" type="number" min="1" step="1">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger modalBtn" data-dismiss="modal">Close</button>
+            <button type="button"  id="sortDataButton" class="btn btn-success modalBtn" data-dismiss="modal">Sort</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal fade" id="advancedSelectModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">
+              Filter Users
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <label id="typeSelectLabel" class="modalLabel" for="typeSelect">Sex</label>
+                <select class="form-control modalInput" id="sexSelect">
+                  <option value="0">Any</option>
+                  <option value="1">Female</option>
+                  <option value="2">Male</option>
+                  <option value="3">Transgender</option>
+                  <option value="4">Other</option>
+                </select>
+              </div>
+              
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <div class="row">
+                  <div class="col-6">
+                    <label id="minLogsLabel" class="modalLabel" for="minEntryNum">Min Total Logs</label>
+                    <input id="minLogs" class="form-control modalInput" type="number" min="1">
+                  </div>
+                  <div class="col-6">
+                    <label id="maxLogsLabel" class="modalLabel" for="maxEntryNum">Max Total Logs</label>
+                    <input id="maxLogs" class="form-control modalInput" type="number" min="1">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <div class="row">
+                  <div class="col-6">
+                    <label id="minAgeLabel" class="modalLabel" for="minEntryNum">Min Age</label>
+                    <input id="minAge" class="form-control modalInput" type="number" min="1">
+                  </div>
+                  <div class="col-6">
+                    <label id="maxAgeLabel" class="modalLabel" for="maxEntryNum">Max Age</label>
+                    <input id="maxAge" class="form-control modalInput" type="number" min="1">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 text-center">
+                <div class="row">
+                  <div class="col-12">
+                    <label id="moduleLabel" class="modalLabel" for="pickModules">Has Played Module:</label>
+                    <p id="moduleNote">Separate module names with commas.</p>
+                    <textarea rows="5" id="pickModules" placeholder="spanish, english, etc."></textarea>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!--<button type="button" class="btn btn-danger modalBtn" data-dismiss="modal">Close</button>-->
+            <button type="button"  id="sortUserButton" class="btn btn-success modalBtn" data-dismiss="modal">Find Matching Users</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <% include partials/common/loadGroupsModal %>
+    <% include partials/common/timeoutLogin %>
+    
+</div>
+
+<% include partials/common/footer %>
+
+<% include partials/tables/js/databaseLogs %>
+<% include partials/tables/js/hiddenUserTable %>
+<% include partials/tables/js/multiUserSearch %>
+<% include partials/tables/js/userAdvanceSearch %>
+<% include partials/common/auth %>
+
+<script>
+
+  function parseCommaString(inputString){
+    var values =  inputString.split(',');
+    //  Any other sanitation goes here
+    for (var i=0; i<values.length; ++i){
+      values[i] = values[i].trim();
+      values[i] = values[i].toLowerCase();
+    }
+    return values;
+  }
+
+  $(function(){
+  
+    var userReq;
+    var logOverviewReq;
+
+    var multiUserSearch = $('#multiUserSearch').DataTable();
+    var userAdvanceSearch = $('#userAdvanceSearch').DataTable();
+    var hiddenUserTable  = $('#hiddenUserTable').DataTable();
+    var userLogFile = $('#userLogFile').DataTable();
+    var databaseLogs = $('#databaseLogs').DataTable();
+    
+    checkToken();
+    
+    $('#hasToken').change(function(){
+      
+      <% include partials/common/pendingAdmin %>
+      
+      
+      //  NOTE: A combination of the logOverview and the /playerList data was
+      //  used to account for users that have played more than one language module
+      //  
+      //  The average and total logs in the table will be a reflection of ALL
+      //  modules they have played. Then, in the Log Data Table, the logs for modules
+      //  that the admin is not concermed with can be filtered out.
+      
+      var logOverview = new XMLHttpRequest();
+      logOverview.open("GET", 'http://159.203.163.147/logOverview', true);
+      logOverview.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      
+      
+      logOverview.onreadystatechange = function () {
+        if(logOverview.readyState == XMLHttpRequest.DONE && logOverview.status == 200) {
+            logOverviewReq = JSON.parse(logOverview.responseText);
+  
+            var userData = new XMLHttpRequest();
+            userData.open("GET", 'http://159.203.163.147/playerList', true);
+            userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+            
+            userData.onreadystatechange = function () {
+              if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+                  var response = JSON.parse(userData.responseText);
+                  userReq = response;
+                  users = [];  //  store the list of users in an array for later use
+
+                  //  For Each player /playerList, create a row in the user table.
+                  for (var i=0; i<response.players.length; ++i){
+                    var player = response.players[i];
+                    
+                    var totalScore = 0.0;
+                    var numScores = 0.0;
+                    var count = 0;
+                    
+                    //  Calculate the average score and numLogs from the logOverview
+                    for (var j=0; j<logOverviewReq.logs.length; ++j){
+                      
+                      if (player.username == logOverviewReq.logs[j].username){
+      
+                        totalScore += logOverviewReq.logs[j].average;
+                        numScores += 1.0;
+                        count += logOverviewReq.logs[j].count;
+                      }
+                    } 
+                    
+                    if (count == 0) continue;
+                    
+                    var averageScore;
+                    if (totalScore == 0 || numScores == 0){
+                      averageScore = 0;
+                    }
+                    else {
+                      averageScore = totalScore / numScores;
+                    }
+                    
+                    var sex;
+                    if      (player.sex == "m")   sex = "Male"
+                    else if (player.sex == "f")   sex = "Female"
+                    else if (player.sex == "t")   sex = "Transgender"
+                    else if (player.sex == "o")   sex = "Other"
+                    
+                    
+                    
+                    multiUserSearch.row.add(["",player.username, count, Math.round(averageScore,1), sex, player.age]).draw(false);
+                    hiddenUserTable.row.add(["",player.username, count, Math.round(averageScore,1), sex, player.age]);
+                    users.push(player.username);
+                    
+
+                  }
+                  //  After the initial load, load the users into the quickSelect
+                  $('#quickSelectLoad').click();
+                  
+                  //  Resize the table to make sure any overflow is hidden in the 
+                  //  child row. Has to be done with a setTimeout to ensure all data
+                  //  is loaded before clicking the resize button
+                  setTimeout(function() {
+                    $(".resizeButton").click();
+                  }, 100)
+              }
+              else {}
+            }
+            
+            userData.send(null);
+            
+            //  Load Groups
+            var groupData = new XMLHttpRequest();
+            groupData.open("GET", 'http://159.203.163.147/group', true);
+            groupData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+            
+            groupData.onreadystatechange = function () {
+              if(groupData.readyState == XMLHttpRequest.DONE && groupData.status == 200) {
+                  var response = JSON.parse(groupData.responseText);
+                  
+                  for (var i=0; i<response.groups.length; ++i){
+                    var group = response.groups[i];
+                    
+                    //  Add the logged in admin's groups to the selection menu
+                    if (group.admin == sessionStorage.getItem('ELLE-author')){
+                      appendString = '<option>' + group.groupName + '</option>';
+                      $('#groupSelect').append(appendString);
+                    }
+                  }
+              }
+              else {}
+            }
+            
+            //  Send the Auth request
+            groupData.send(null)
+          }
+          else {}
+      }
+      
+      //  Send the Auth request
+      logOverview.send(null);
+      
+    });   //  End of the hasToken/onLoad functions
+    
+    //  Have to auto-resize upon table-select becoming active (doesn't start out resized automatically)
+    $(".table-select").click(function() {
+      $(function() {
+          setTimeout(function () {
+            $('.resizeButton').click();
+          }, 100)
+      });
+    });
+    
+    //  btn-group causes graphical errors when the screen gets small
+    $(".btn-group").removeClass("btn-group");
+    
+    // //  Double clicking on a row counts as a selection
+    // $('#multiUserSearch tbody').on('dblclick', 'tr', function () {
+    //   $('.searchSubmitButton').click();
+    // });
+    
+
+    $('#loadGroupButton').click(function() {
+      
+      var groupUsers;
+      var groupName = $('#groupSelect').find(":selected").text();
+      
+      var getGroupUsers = new XMLHttpRequest();
+      var urlString = 'http://159.203.163.147/groupMember/' + groupName;
+      getGroupUsers.open("GET", urlString, true);
+      getGroupUsers.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+      
+      getGroupUsers.onreadystatechange = function () {
+        if(getGroupUsers.readyState == XMLHttpRequest.DONE && getGroupUsers.status == 200) {
+            // Request finished. Do processing here.
+            multiUserSearch.clear();
+            
+            var response = JSON.parse(getGroupUsers.responseText);
+            groupUsers = response;
+            users = [];
+            
+            if (response.members.length == 0){
+              multiUserSearch.clear().draw(false);
+              return;
+            }
+            
+            for (var i=0; i<response.members.length; ++i){
+              var user = response.members[i];
+              users.push(user.username);
+            }
+
+            for (var i=0; i<userReq.players.length; ++i){
+              
+              var user = userReq.players[i];
+
+              if (users.indexOf(user.username) != -1){
+                
+                var totalScore = 0.0;
+                var numScores = 0.0;
+                var count = 0;
+                
+                for (var j=0; j<logOverviewReq.logs.length; ++j){
+                  if (user.username == logOverviewReq.logs[j].username){
+                    
+                    totalScore += logOverviewReq.logs[j].average;
+                    numScores += 1.0;
+                    count += logOverviewReq.logs[j].count;
+                    
+                  }
+                }
+                
+                if (count == 0) continue;
+                
+                var averageScore;
+              
+                if (totalScore == 0 || numScores == 0){
+                  averageScore = 0;
+                }
+                else {
+                  averageScore = totalScore / numScores;
+                }
+                
+                var sex;
+                if (user.sex == "m")        sex = "Male"
+                else if (user.sex == "f")   sex = "Female"
+                else if (user.sex == "t")   sex = "Transgender"
+                else if (user.sex =="o")    sex = "Other"
+                
+                
+                multiUserSearch.row.add(["",user.username, count, Math.round(averageScore,1), sex, user.age]).draw(false);
+                //multiUserSearch.row.add(["",user.username, "", "", "", sex, user.age, ""]).draw(false);
+              }
+            }
+
+        }
+        else {}
+      }
+      
+      getGroupUsers.send(null);
+      
+    });
+    
+    $("#quickSelectLoad").click(function(){
+
+      var searchData = new Array();
+      
+      multiUserSearch.rows().every(function(){
+        var data = (this).data();
+        searchData.push(data[1]);
+      });
+      
+      $.typeahead({
+        input: '.js-typeahead-userSearch',
+        minLength: 1,
+        maxItem: 4,
+        searchOnFocus: true,
+        dynamic: true,
+        delay: 100,
+        offset: true,
+        accent: true,
+        blueOnTab: false,
+        order: "asc",
+      
+        source: {
+            data: searchData
+          },
+          callback: {
+              onInit: function (node) {
+              }
+          }
+      });
+      
+    });
+    
+    //  Function for submitting the quick select form
+    $('#form-userSearch').submit(function(event){
+      event.preventDefault();
+      var user = $('.js-typeahead-userSearch').val();
+      
+      if (users.indexOf(user) != -1){
+        
+        var userData = new XMLHttpRequest();
+        var urlString = 'http://159.203.163.147/log/player/' + $('.js-typeahead-userSearch').val();
+        userData.open("GET", urlString, true);
+        userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+
+        userData.onreadystatechange = function () {
+          if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
+            
+              databaseLogs.clear().draw(false);
+              var response = JSON.parse(userData.responseText);
+
+              for (var i=0; i<response.logs.length; ++i){
+                var log = response.logs[i];
+                databaseLogs.row.add( ["", $('.js-typeahead-userSearch').val(), (i+1), log.game_type, log.lang_name, log.lang_version, log.score, log.logID, log.puzzles_attempted]).draw(false);
+              }
+              
+              if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
+              
+              $('html, body').animate({
+                scrollTop: $("#bigTab-data-one").offset().top
+              }, 1500);
+              
+              $('.logData-resizeButton').click();
+              
+          }
+          else {
+          }
+        }
+        
+        userData.send(null);
+
+      }
+    });
+    
+    //  Function for clicking the Filter Data button on the associated Modal
+    $('#sortDataButton').click(function(){
+    
+      var validTypes = [];
+      var minEntryNum = 0;
+      var maxEntryNum = 10000000000;  ///  arbitrary really big number
+      var minVersion = 1;
+      
+      switch ($('#typeSelect :selected').val()){
+        case '0':
+          validTypes.push("VR");
+          validTypes.push("TPP");
+          validTypes.push("TPO");
+          break;
+        case '1':
+          validTypes.push("VR");
+          break;
+        case '2':
+          validTypes.push("TPP");
+          break;
+        case '3':
+          validTypes.push("TPO");
+          break;
+        case '4':
+          validTypes.push("VR");
+          validTypes.push("TPP");
+          break;
+        case '5':
+          validTypes.push("TPP");
+          validTypes.push("TPO");
+          break;
+      }
+      
+      if ($('#minEntryNum').val().length != 0){
+        minEntryNum = parseInt($('#minEntryNum').val());
+      }
+      
+      if ($('#maxEntryNum').val().length != 0){
+        maxEntryNum = parseInt($('#maxEntryNum').val());
+      }
+      
+      if ($('#minVersion').val().length != 0){
+        minVersion = parseInt($('#minVersionNum').val());
+      }
+      
+      databaseLogs.rows().eq(0).each(function( index){
+        var row = databaseLogs.row(index);
+        var data = row.data();
+        var body = row.node();
+        
+        //  If they fail any of the tests, mark the row for removal
+        if ( !validTypes.includes(data[3]) ||
+            data[2] < minEntryNum ||
+            data[2] > maxEntryNum ||
+            data[5] < minVersion){
+              
+            $(body).addClass("REMOVE");
+        }
+        
+      });  //  End of iteration through each log file row
+      
+      //  Remove all of the rows that have been marked for removal
+      databaseLogs.rows(".REMOVE").remove().draw(false);
+
+    });
+    
+    //  Function for clicking the Submit Filters button in the UserAdvanceSelect Modal
+    $('#sortUserButton').click(function(){
+      
+      userAdvanceSearch.clear().draw(false);
+      
+      var validSexes = [];
+      var minLogsNum = 0;
+      var maxLogsNum = 10000000000;  ///  arbitrary really big number
+      var minAgeNum = 0;
+      var maxAgeNum = 100000000000;
+      var pickModules = [];
+      
+      switch ($('#sexSelect :selected').val()){
+        case '0':
+          validSexes.push("Male");
+          validSexes.push("Female");
+          validSexes.push("Transgender");
+          validSexes.push("Other");
+          break;
+        case '1':
+          validSexes.push("Female");
+          break;
+        case '2':
+          validSexes.push("Male");
+          break;
+        case '3':
+          validSexes.push("Transgender");
+          break;
+        case '4':
+          validSexes.push("Other");
+          break;
+      }
+      
+      if ($('#minLogs').val().length != 0){
+        minLogsNum = parseInt($('#minLogs').val());
+      }
+      
+      if ($('#maxLogs').val().length != 0){
+        maxLogsNum = parseInt($('#maxLogs').val());
+      }
+      
+      if ($('#minAge').val().length != 0){
+        minAgeNum = parseInt($('#minAge').val());
+      }
+      
+      if ($('#maxAge').val().length != 0){
+        maxAgeNum = parseInt($('#maxAge').val());
+      }
+      
+      pickModules = parseCommaString($('#pickModules').val());
+      
+      if (pickModules.length == 1 && 
+          pickModules[0] == ""){
+          pickModules = [];
+      }
+      
+      hiddenUserTable.rows().every(function() {
+        var data = this.data();
+        
+        //  If the user info passes the set of search filters...
+        if (validSexes.indexOf(data[4]) != -1 &&
+            data[2] >= minLogsNum &&
+            data[2] <= maxLogsNum &&
+            data[5] >= minAgeNum  &&
+            data[5] <= maxAgeNum ){
+
+            
+            var logArray = logOverviewReq.logs;
+
+            for (var i=0; i<logArray.length; i++){
+              
+              var log = logArray[i];
+              
+              if (log.username == data[1]){
+                
+                //  If modules is empty, then automatically add the user to the table
+                if (pickModules.length == 0){
+                  userAdvanceSearch.row.add(["", data[1], data[2], data[3], data[4], data[5]]).draw(false);
+                }
+                
+                //  If modules is not empty but the user has played that module, then add the user to the table
+                if (pickModules.length > 0 &&
+                    pickModules.indexOf(log.lang_name) != -1){
+                    userAdvanceSearch.row.add(["", data[1], data[2], data[3], data[4], data[5]]).draw(false);
+                }
+              }
+            }
+        }
+
+      });
+
+    });
+    
+    $('#minEntryNum').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          $('#maxEntryNum').focus();
+          event.preventDefault();
+      }
+    });
+    $('#maxEntryNum').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#minVersion").focus();
+      }
+    });
+    $('#minVersion').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#sortDataButton").click();
+      }
+    });
+    $('#sexSelect').change(function() {
+      $("#minLogs").focus();
+    })
+    $('#minLogs').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#maxLogs").focus();
+      }
+    });
+    $('#maxLogs').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#minAge").focus();
+      }
+    });
+    $('#minAge').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#maxAge").focus();
+      }
+    });
+    $('#maxAge').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#pickModules").focus();
+      }
+    });
+    $('#pickModules').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          event.preventDefault();
+          $("#sortUserButton").focus();
+      }
+    });
+
+  });
+</script>
+
+    

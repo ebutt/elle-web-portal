@@ -1,0 +1,49 @@
+<% include partials/common/beforeTitle %>
+  <title>ELLE Settings</title>
+  <link rel="stylesheet" href="stylesheets/settings/settingsMenu.css">
+
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="container pageContent">
+    
+    <div class="col-12 col-lg-8 offset-lg-2 content-text text-center content-title">
+        <h2 class="pageHeader">Settings Menu</h2>
+        <div class="text-center menuSpacer">
+          <a href="/home" class="returnLink">Return to Main Menu</a>
+        </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-10 offset-1 col-sm-6 offset-sm-0 col-lg-4 offset-lg-2">
+        <a href="/settings/pendingAdmins">
+          <div class="card content-center" id="accountCard">
+            <img class="customIcon" src="assets/img/icons/idCard.png">
+            <h3 class="cardCaption text-center">Pending Admins</h3>
+          </div>
+        </a>
+      </div>
+      <div class="col-10 offset-1 col-sm-6 offset-sm-0 col-lg-4">
+        <a href="/settings/resetPassword">
+          <div class="card content-center" id="passCard">
+            <img class="customIcon" src="assets/img/icons/passwordLock.png">
+            <h3 class="cardCaption text-center">Change Password</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+</div>
+
+<% include partials/common/timeoutLogin %>
+<% include partials/common/footer %>
+<% include partials/common/auth %>
+<script>
+  $(function(){
+    checkToken();
+    
+    $('#hasToken').change(function() {
+      <% include partials/common/pendingAdmin %>
+    });
+  });
+</script>
+    

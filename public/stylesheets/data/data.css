@@ -1,0 +1,63 @@
+#myChart {
+    max-height: 450px;
+}
+
+#myChart2{
+    max-height: 450px;
+}
+
+#myChart3{
+    max-height: 450px;
+}
+
+canvas {
+  padding: 20px 10px;
+}
+
+.tabInput {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+
+.selectLabel {
+  background: #56ab2f;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.downloadLabel {
+background: #B24592;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #F15F79, #B24592);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #F15F79, #B24592); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+color: #2e2e30;
+  
+}
+
+
+input:checked ~ .bigAccordionTab-content {
+  max-height: 2000px;
+}
+
+/* :checked */
+input:checked ~ .graphAccordionTab-content {
+  max-height: 500px;
+}
+
+.control-label {
+  font-size: large;
+}
+
+.bigLabel {
+  font-size: large;
+}
+
+#groupSelect option {
+  font-size: large;
+}
+
+.inputDiv {
+    margin-top: 20px;
+}
+

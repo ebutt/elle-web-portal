@@ -1,0 +1,54 @@
+#groupName{
+    margin-bottom: 40px;
+}
+
+#membersTag {
+    /*font-size: 2em;*/
+}
+.control-label{
+    font-size: x-large;
+    text-decoration: underline;
+    margin-bottom: 0px
+}
+
+.noteSpacer {
+    clear: both;
+    visibility: hidden;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.groupNote {
+    /*margin-bottom: 10px;*/
+    padding-bottom: 10px;
+}
+
+#createFormButton, #updateFormButton {
+    /*margin-right: 100px;*/
+    margin-bottom: 20px;
+}
+
+#cancelButton {
+    margin-bottom: 20px;
+}
+
+#form-memberAdd {
+    margin-top: 20px;
+    margin-bottom: 200px;
+}
+
+#addNewMember, #typeaheadSubmitButton {
+    /*margin-top: 20px;*/
+}
+
+
+.existWarningSpacer {
+  clear: both;
+  visibility: hidden;
+  margin: 2px 0;
+}
+
+#existWarning {
+    text-decoration: none;
+}
+

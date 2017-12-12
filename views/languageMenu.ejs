@@ -1,0 +1,54 @@
+<% include partials/common/beforeTitle %>
+  <title>Language Pack Menu</title>
+  <link rel="stylesheet" href="stylesheets/language/languageMenu.css">
+
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="container pageContent">
+    
+    <div class="col-12 col-lg-8 offset-lg-2 content-title text-center">
+        <h2 class="pageHeader">Language Pack Menu</h2>
+        <div class="text-center menuSpacer">
+          <a href="/home" class="returnLink">Return to Main Menu</a>
+        </div>
+    </div>
+    
+    <div class="row">
+      
+      <div class="col-10 offset-1 col-sm-6 offset-sm-0 col-lg-4 offset-lg-2">
+        <a href="/languages/create">
+          <div class="card content-center" id="createCard">
+            <img class="customIcon" src="assets/img/icons/languageBubble.png">
+            <h3 class="cardCaption text-center">Create Language</h3>
+          </div>
+        </a>
+      </div>
+      <div class="col-10 offset-1 col-sm-6 offset-sm-0 col-lg-4">
+        <a href="/languages/select">
+          <div class="card content-center" id="editCard">
+            <img class="customIcon" src="assets/img/icons/language-book.png">
+            <h3 class="cardCaption text-center">Edit Languages</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+</div>
+
+<div class="pageEnder"></div>
+<% include partials/common/timeoutLogin %>
+
+<% include partials/common/footer %>
+<% include partials/common/auth %>
+
+<script>
+   $(function(){
+     checkToken();
+     
+     $("#hasToken").change(function() {
+       <% include partials/common/pendingAdmin %>
+     })
+   });
+</script>
+
+    

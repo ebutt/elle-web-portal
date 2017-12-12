@@ -1,0 +1,182 @@
+<script>
+$(document).ready(function() {
+    
+    var deletedPlayers = [];
+    
+    var editGroup = $('#editGroup').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "multi+shift"
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            }
+        ],
+        order: [ 0, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            
+        
+        {
+            text: 'Submit Members',
+            className: 'submitButton btn-success',
+            action: function ( ) {
+                $('#modal-foundErrors').empty();
+                if (myGroups.includes($("#groupName").val()) &&
+                    !$("#groupName").prop('disabled')){
+                  var li = document.createElement('li');
+                  var textNode = document.createTextNode("There is already a group with that name");
+                  li.appendChild(textNode);
+                  document.getElementById("modal-foundErrors").appendChild(li);
+                  $("#errorModal").modal();
+                  return;
+                  
+                }
+                
+                $("#submitText").html("Submitting Group...");
+                $("#submitInfo").modal();
+                
+                if (!$('#groupName').prop('disabled')){
+                    var postGroupJSON = {
+                      'groupName': $('#groupName').val(),
+                    }
+                    
+                    
+                    var postGroupJSONreq = JSON.stringify(postGroupJSON);
+                    var postGroup = new XMLHttpRequest();
+                    postGroup.open("POST", 'http://159.203.163.147/group', true);
+                    postGroup.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                    postGroup.setRequestHeader("Content-Type", "application/json");
+                    
+                    postGroup.onreadystatechange = function () {
+                      if (postGroup.readyState == XMLHttpRequest.DONE && postGroup.status == 200) {
+                      }
+                      else {}
+                    }
+                    
+                    postGroup.send(postGroupJSONreq);
+                }
+                
+                
+                setTimeout(function(){
+                editGroup.rows().eq(0).each(function(index) {
+                    var row = editGroup.row(index);
+                    var data = row.data();
+                    
+                    var postMemberJSON = {
+                      'username': data[1]
+                    }
+                    
+                    var postMemberJSONreq = JSON.stringify(postMemberJSON);
+                    
+                    var postMember = new XMLHttpRequest();
+                    var urlString = "http://159.203.163.147/groupMember/" + encodeURIComponent($("#groupName").val());
+                    postMember.open("POST", urlString, true);
+                    postMember.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                    postMember.setRequestHeader("Content-Type", "application/json");
+                    
+                    postMember.onreadystatechange = function () {
+                      if (postMember.readyState == XMLHttpRequest.DONE && postMember.status == 200) {
+                            var response = JSON.parse(postMember.responseText);
+                      }
+                      else {
+                        var response = JSON.parse(postMember.responseText);
+                      }
+                    }
+                    
+                    postMember.send(postMemberJSONreq)
+                
+                
+              })
+            }, 1000);
+            
+            setTimeout(function(){
+                for (var i=0; i<deletedPlayers.length; ++i){
+                    var deleteMemberJSON = {
+                        'username': deletedPlayers[i]
+                      }
+                      
+                      var deleteMemberJSONreq = JSON.stringify(deleteMemberJSON);
+                      
+                      var deleteMember = new XMLHttpRequest();
+                      var urlString = "http://159.203.163.147/groupMember/" + encodeURIComponent($("#groupName").val());
+                      deleteMember.open("DELETE", urlString, true);
+                      deleteMember.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+                      deleteMember.setRequestHeader("Content-Type", "application/json");
+                      
+                      //  What to do if the Auth passes/fails
+                      deleteMember.onreadystatechange = function () {
+                        if (deleteMember.readyState == XMLHttpRequest.DONE && deleteMember.status == 200) {
+                              // Request finished. Do processing here.
+                              var response = JSON.parse(deleteMember.responseText);
+                        }
+                        else {
+                          var response = JSON.parse(deleteMember.responseText);
+                        }
+                      }
+                      
+                      //  Send the Auth request
+                      deleteMember.send(deleteMemberJSONreq)
+                }
+        
+            }, 1250);
+            
+            setTimeout(function() {
+                window.location = "/assets/myGroups"
+            }, 2000)
+                
+                
+            }     //    End of action method
+        },
+        {
+            text: 'Delete Selections',
+            className: 'removeSelectButton btn-danger',
+            action: function ( ) {
+                
+                
+                editGroup.rows('.selected').every(function(){
+                    var data = this.data();
+                    deletedPlayers.push(data[1]);
+                    
+                });
+                
+                editGroup.rows('.selected').remove().draw(false);
+            }
+        },
+        {
+            text: 'Clear Selections',
+            className: 'btn-info clearButton',
+            action: function ( ) {
+                editGroup.rows().deselect();
+            } 
+        },
+        {
+            text: 'Cancel Changes',
+            className: 'btn-secondary cancelButon',
+            action: function ( ) {
+                window.location = "/assets/myGroups";
+            } 
+        }
+        
+        ],
+    } );
+} );
+</script>

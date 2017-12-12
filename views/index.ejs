@@ -1,0 +1,235 @@
+<% include partials/common/beforeTitle %>
+  <title>ELLE Homepage</title>
+ 
+<link rel="stylesheet" href="stylesheets/index/index.css">
+<script type="text/javascript" src="assets/js/raphael.min.js"></script>
+<script type="text/javascript" src="assets/js/wheelnav.min.js"></script>
+<script type="text/javascript" src="assets/js/raphael.icons.min.js"></script>
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+<div class="homepageContents">
+  <div class="col-12 mainMenuTitleBox text-center">
+    <h1 id="menuMainTitle">ELLE ADMIN PORTAL</h1>
+  </div>
+  <div class="menuContainer color-helpBackground row">
+    <hr>
+    <div class="col-12 col-md-6 wheelBounds">
+      <h2 id="wheelDivTitle">The ELLE Homepage</h2>
+      <hr class="titleSep">
+      <div id="wheelDiv" data-wheelnav></div>
+    </div>
+    <div class="col-12 col-md-6 descriptionBounds">
+      <h2 id="menuTitle"><span id="menuName">Navigation Menu</span></h2>
+      <hr class="titleSep">
+      <p id="menuLine1" class="menuText">Welcome to the ELLE Admin Portal!</p>
+      <hr class="lineSep">
+      <p id="menuLine2" class="menuText">First Time Here? Click through the circular Navigation Menu to learn more about what this site can do for you!</p>
+      <hr class="lineSep">
+      <p id="menuLine3" class="menuText">If not, feel free to click on one of the NavBar buttons at the top of the screen, or double click one of the color wheel icons to launch the corresponding page!</p>
+      <hr class="lineSep">
+      <div class="linkContainer">
+        <a id="menuLink" href="#"></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% include partials/common/timeoutLogin %>
+<% include partials/common/footer %>
+
+<% include partials/common/auth %>
+
+
+<script>
+
+
+  $(function(){
+    
+    checkToken();
+    
+    $("#hasToken").change(function(){
+      <% include partials/common/pendingAdmin %>
+    });
+    
+    var wheel = new wheelnav("wheelDiv");
+    // wheel.clickModeRotate = false;
+    
+    //  Selected Transform
+    wheel.selectedPercent = 1.05;
+    // wheel.sliceSelectedTransformFunction = sliceTransform().MoveMiddleTransform;
+    
+    //  Spreader Tools
+    wheel.spreaderInTitle = icon.list;
+    wheel.spreaderOutTitle = icon.contract;
+    
+    // Spreader color
+    wheel.spreaderPathInAttr = { fill: '#FFF', 'stroke-width': 5, stroke: '#555' };
+    wheel.spreaderPathOutAttr = { fill: '#FFF', 'stroke-width': 3, stroke: '#555' };
+    // The color of the icon
+    wheel.spreaderTitleInAttr = { fill: '#333' };
+    wheel.spreaderTitleOutAttr = { fill: '#333' };
+    
+    wheel.spreaderEnable = true;
+    wheel.spreaderRadius = 50;
+    wheel.spreaderInPercent = 1.5;
+    wheel.spreaderOutPercent = .95;
+    
+    //  Marker
+    // wheel.markerEnable = true;
+    
+    // Animation Timings
+    wheel.animatetime = 400;
+    wheel.animateeffect = 'linear';
+    wheel.wheelRadius = wheel.wheelRadius * 0.8;
+    
+    //  Wheel Type configurations
+    wheel.spreaderPathFunction = spreaderPath().FlowerSpreader;
+    wheel.slicePathFunction = slicePath().CogBasePieSlice;
+    wheel.sliceHoverPathFunction = slicePath().CogSlice;
+    wheel.sliceSelectedPathFunction = slicePath().StarSlice;
+    
+    // Custom Animation
+    wheel.slicePathCustom = slicePath().PieSliceCustomization();
+    wheel.sliceHoverPathCustom = slicePath().DonutSliceCustomization();
+    wheel.sliceSelectedPathCustom = slicePath().StarSliceCustomization();
+    wheel.slicePathCustom.titleRadiusPercent = 0.60;
+    wheel.sliceHoverPathCustom.titleRadiusPercent = 0.65;
+    wheel.sliceSelectedPathCustom.titleRadiusPercent = 0.50;
+    
+    // wheel.wheelRadius = 150;
+    // wheel.navAngle = 30;
+    // wheel.colors = colorpalette.fractallove;
+    
+    
+    wheel.colors = ["#7e30a0", "#2ba9cd", "#44c47d", "#fab256", "#66615B"]
+    
+    
+    wheel.initWheel(['imgsrc:assets/img/icons/menu-help.png',
+                     'imgsrc:/assets/img/icons/menu-db.png',
+                     'imgsrc:/assets/img/icons/languageBlock1.png',
+                     'imgsrc:/assets/img/icons/menu-book.png',
+                     'imgsrc:/assets/img/icons/menu-gear.png']);
+    wheel.createWheel();
+    
+    //  Help Click
+    wheel.navItems[0].navigateFunction = function(){
+      if ($('.menuContainer').hasClass("color-helpBackground")){
+        //  No point redirecting to homepage
+      }
+      else {
+        $('.menuContainer').removeClass(function(){
+          return (this.className.match(/\bcolor-[\w]{1,}/g) || []).join(' ');
+        });
+        $('.menuContainer').addClass("color-helpBackground");
+        $('#wheelDivTitle').html("The ELLE Homepage");
+        $('#menuName').html("Navigation Menu");
+        $('#menuLine1').html("Welcome to the ELLE Admin Portal!");
+        $('#menuLine2').html("First Time Here? Click through the circular Navigation Menu to learn more about what this site can do for you!");
+        $('#menuLine3').html("If not, feel free to click on one of the NavBar buttons at the top of the screen, or double click one of the color wheel icons to launch the corresponding page!");
+        $('#menuLink').attr("href", "#");
+        $('#menuLink').html("");
+      }
+    };
+
+    // Database Click
+    wheel.navItems[1].navigateFunction = function(){
+      if ($('.menuContainer').hasClass("color-dataBackground")){
+        window.location = "/userlog"
+      }
+      else {
+        $('.menuContainer').removeClass(function(){
+          return (this.className.match(/\bcolor-[\w]{1,}/g) || []).join(' ');
+        });
+        $('.menuContainer').addClass("color-dataBackground");
+        $('#wheelDivTitle').html("Donwload Log Files");
+        $('#menuName').html("Select Game Data");
+        $('#menuLine1').html("Build a custom dataset using ELLE game data from any number of users.");
+        $('#menuLine2').html("Choose from a variety of parameters to tailor the dataset to meet all of your research needs.");
+        $('#menuLine3').html("Then export and view the actual log file data as CSV files!");
+        $('#menuLink').attr("href", "/database");
+        $('#menuLink').html("Build your Custom Dataset!");
+      }
+    };
+    
+    //  Language Click
+    wheel.navItems[2].navigateFunction = function(){
+      if ($('.menuContainer').hasClass("color-langBackground")){
+        window.location = "/languages";
+      }
+      else {
+        $('.menuContainer').removeClass(function(){
+          return (this.className.match(/\bcolor-[\w]{1,}/g) || []).join(' ');
+        });
+        $('.menuContainer').addClass("color-langBackground");
+        $('#wheelDivTitle').html("Language Pack Tools");
+        $('#menuName').html("Creating/Editing Modules");
+        $('#menuLine1').html("Your best option for everything Language Pack related!");
+        $('#menuLine2').html("Create a new Language Pack, or edit one that already exists. ");
+        $('#menuLine3').html("Add, Edit, or Remove Terms from an available Language Pack as you see fit.");
+        $('#menuLink').attr("href", "/languages");
+        $('#menuLink').html("Go to Language Pack Tools!");
+      }
+    };
+    
+    // Assets Click
+    wheel.navItems[3].navigateFunction = function(){
+      if ($('.menuContainer').hasClass("color-assetsBackground")){
+        window.location = "/assets"
+      }
+      else {
+        $('.menuContainer').removeClass(function(){
+          return (this.className.match(/\bcolor-[\w]{1,}/g) || []).join(' ');
+        });
+        $('.menuContainer').addClass("color-assetsBackground");
+        $('#wheelDivTitle').html("Your Personal Assets");
+        $('#menuLine1').html("Manage the Groups and Language Packs that you have created!");
+        $('#menuLine2').html("Groups are simply saved lists of usernames which allow you to pull user data at lightning speeds!");
+        $('#menuLine3').html("It is <u>HIGHLY SUGGESTED</u> you create some if you haven't already!");
+        $('#menuLink').attr("href", "/assets");
+        $('#menuLink').html("View Your Personal Assets!");
+      }
+    };
+    
+    // Settings Click
+    wheel.navItems[4].navigateFunction = function(){
+      if ($('.menuContainer').hasClass("color-settingsBackground")){
+        window.location = "/settings"
+      }
+      else {
+        $('.menuContainer').removeClass(function(){
+          return (this.className.match(/\bcolor-[\w]{1,}/g) || []).join(' ');
+        });
+        $('.menuContainer').addClass("color-settingsBackground");
+        $('#wheelDivTitle').html("Settings Menu");
+        $('#menuName').html("Account Settings");
+        $('#menuLine1').html("Manage your Account's Personal Settings");
+        $('#menuLine2').html("Check and see if you have any pending admins waiting for your approval!");
+        $('#menuLine3').html("Or, enter your security information to reset your current password.");
+        $('#menuLink').attr("href", "/settings");
+        $('#menuLink').html("View your Account Settings!");
+      }
+    };
+    
+    // The Icon Styles
+    // wheel.titleAttr = { fill: "#FFF" };
+    // wheel.titleSelectedAttr = { fill: "#111" };
+    // wheel.titleHoverAttr = { fill: "#111" };
+    
+    // Not really sure...
+    // wheel.linePathAttr = { stroke: '#369', 'stroke-width': 2 };
+    // wheel.lineHoverAttr = { stroke: '#69C', 'stroke-width': 3 };
+    // wheel.lineSelectedAttr = { stroke: '#9CF', 'stroke-width': 10 };
+    
+    //  Segment outlines
+    wheel.slicePathAttr = { stroke: '#111', 'stroke-width': 3 };
+    wheel.sliceHoverAttr = { stroke: '#282828', 'stroke-width': 5 };
+    wheel.sliceSelectedAttr = { stroke: '#0b0d23', 'stroke-width': 5 };
+    
+    wheel.refreshWheel();
+    
+  });
+</script>
+
+
+

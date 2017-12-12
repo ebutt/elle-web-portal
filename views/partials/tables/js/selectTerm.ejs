@@ -1,0 +1,117 @@
+<script>
+$(document).ready(function() {
+    var selectTerm = $('#selectTerm').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        select: {
+            style: "single",
+            selector: 'tr>td:nth-child(2), tr>td:nth-child(3), tr>td:nth-child(4), tr>td:nth-child(5), tr>td:nth-child(6)'
+        },
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            },
+            {
+                targets: [5,6,7],
+                orderable: false,
+                searchable: false
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        caseInsensitive: true,
+        pageLength: 10,
+        buttons: [
+            {
+                extend:'colvis',
+                className: 'hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            },
+            {
+               text: 'Create a Term',
+                className: 'deleteButton btn-success',
+                action: function () {
+                    window.location = "/languages/editMenu/createTerm?lang="+getQueryVariable("lang");
+                } 
+            },
+            {
+                text: 'Delete Selected',
+                className: 'deleteButton btn-danger',
+                action: function () {
+                    if (selectTerm.rows('.selected').count() == 1){
+                        var data = selectTerm.row('.selected').data();
+                        $('.possibleDelete').html(data[2]);
+                        $('#deleteConfirm').modal();
+                    }
+                }
+            },
+            {
+                text: 'Edit Selected',
+                className: 'submitButton btn-warning',
+                action: function () {
+                    if (selectTerm.rows('.selected').count() == 1){
+                        var data = selectTerm.row('.selected').data();
+                        window.location = "/languages/editMenu/editTerm?lang="+getQueryVariable("lang")+"&term="+data[1];
+                    }
+               }
+            },
+            
+        ],
+    } );
+    
+    new $.fn.dataTable.Buttons (selectTerm, {
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'resizeButton hide secondSetBtn',
+              action: function () {
+                  selectTerm.responsive.recalc();
+              }
+            },
+            {
+                text: 'Delete Selected',
+                className: 'deleteButton secondSetBtn btn-danger',
+                action: function () {
+                    if (selectTerm.rows('.selected').count() == 1){
+                        var data = selectTerm.row('.selected').data();
+                        $('.possibleDelete').html(data[1]);
+                        $('#deleteConfirm').modal();
+                    }
+                }
+            },
+            {
+                text: 'Edit Selected',
+                className: 'submitButton secondSetBtn btn-warning',
+                action: function () {
+                    if (selectTerm.rows('.selected').count() == 1){
+                        var data = selectTerm.row('.selected').data();
+                        window.location = "/languages/editMenu/editTerm?lang="
+                            +getQueryVariable("lang")+"&term="
+                            +encodeURIComponent(data[1]);
+                    }
+               }
+            }
+        ]
+    });
+    
+    selectTerm.buttons( 1, null ).container().appendTo(
+        selectTerm.table().container()
+    );
+
+} );
+</script>

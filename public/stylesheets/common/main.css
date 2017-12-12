@@ -1,0 +1,270 @@
+body {
+    background-image: url('../../assets/img/backgrounds/symphony.png');
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.pageContent {
+    margin-top: 20px;
+}
+
+.pageEnder {
+    min-height: 1px;
+    margin-bottom: 40px;
+}
+
+.hide {
+    display: none;
+}
+
+.card {
+    border: 2px groove black;
+    border-radius: 30px;
+    margin: 12.5px 0px;
+    -webkit-filter: brightness(90%);
+    filter: brightness(90%);
+    -webkit-box-shadow: 7px 15px 25px -8px rgba(0,0,0,0.5);
+    -moz-box-shadow: 7px 15px 25px -8px rgba(0,0,0,0.5);
+    box-shadow: 7px 15px 25px -8px rgba(0,0,0,0.5);
+}
+
+.card:hover{
+    -webkit-filter: brightness(115%);
+    filter: brightness(115%);
+    -webkit-box-shadow: 3px 4px 5px 0px rgba(0,0,0,0.70); 
+    -moz-box-shadow: 3px 4px 5px 0px rgba(0,0,0,0.70); 
+    box-shadow: 3px 4px 5px 0px rgba(0,0,0,0.70); 
+}
+
+.overlay {
+    
+}
+
+.pageDescription {
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.customIcon {
+    max-width: 120px;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.form-control + .form-control-feedback {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.imagePreview {
+    max-width: 150px;
+    margin: 0 auto;
+}
+
+.dummySpacer {
+    margin: 20px 0;
+}
+
+.radioItem2 {
+    margin-top: 10px;
+}
+
+.typeheadSearch {
+    padding-bottom: 20px;
+}
+.pagination {
+    padding-bottom: 15px;
+}
+
+.nav.nav-tabs .nav-item .nav-link.active {
+    color: green;
+    font-size: large;
+}
+
+.dataTables_scrollHead{
+    margin-top: 10px;
+}
+
+#multiUserSearch_filter{
+    margin-bottom: 5px;
+}
+
+.control::before{
+    /*margin-bottom: 10px;*/
+}
+
+/*Accordion Stuff*/
+.bigAccordionTab {
+  position: relative;
+  margin-bottom: 1px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.bigAccordionTabLabel {
+  text-align: center;
+  position: relative;
+  display: block;
+  padding: 0 0 0 1em;
+  font-weight: bold;
+  font-size: 1.75em;
+  line-height: 3;
+  color: #3c3e42;
+  cursor: pointer;
+}
+
+.bigAccordionTab-content {
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: max-height .35s;
+  -o-transition: max-height .35s;
+  -moz-transition: max-height .35s;
+  transition: max-height .35s;
+}
+
+.typeahead__container {
+  z-index: 0 !important;
+}
+
+/*.bigAccordionTab-content p {*/
+/*  margin: 1em;*/
+/*}*/
+
+.graphAccordionTab {
+  position: relative;
+  margin-bottom: 1px;
+  width: 100%;
+  /*color: #fff;*/
+  overflow: hidden;
+}
+
+.tabInput {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+
+.graphAccordionTabLabel {
+  text-align: center;
+  position: relative;
+  display: block;
+  padding: 0 0 0 1em;
+  background: #ff9966;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #ff5e62, #ff9966);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #ff5e62, #ff9966); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #3c3e42;
+  font-size: 1.75em;
+  font-weight: bold;
+  line-height: 3;
+  cursor: pointer;
+}
+
+.graphAccordionTab-content {
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: max-height .35s;
+  -o-transition: max-height .35s;
+  -moz-transition: max-height .35s;
+  transition: max-height .35s;
+}
+
+.graphAccordionTab-content p {
+  margin: 1em;
+}
+
+
+.dt-center tr th, .dt-center tr td {
+    text-align: center;
+}
+
+.dt-center tr .child {
+  text-align: left;
+}
+
+.dtr-title {
+  text-align: center;
+  padding-right: 15px;
+  border-right: 1px dashed #7c7c7c;
+}
+
+.dtr-data {
+  padding-left: 15px;
+  /*border: 1px dashed yellow;*/
+}
+
+#loadGroupsModal {
+  z-index: 1500;
+}
+
+.bigAccordionTabLabel::after, .graphAccordionTabLabel::after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 3em;
+  height: 3em;
+  line-height: 3;
+  text-align: center;
+  -webkit-transition: all .35s;
+  -o-transition: all .35s;
+  -moz-transition: all .35s;
+  transition: all .35s;
+}
+
+input[type=checkbox] + .bigAccordionTabLabel::after {
+  content: "+";
+}
+input[type=checkbox] + .graphAccordionTabLabel::after {
+  content: "+";
+}
+input[type=radio] + .bigAccordionTabLabel::after {
+  content: "\25BC";
+}
+input[type=radio] + .graphAccordionTabLabel::after {
+  content: "\25BC";
+}
+input[type=checkbox]:checked + .bigAccordionTabLabel::after {
+  transform: rotate(315deg);
+}
+input[type=checkbox]:checked + .graphAccordionTabLabel::after {
+  transform: rotate(315deg);
+}
+input[type=radio]:checked + .bigAccordionTabLabel::after {
+  transform: rotateX(180deg);
+}
+input[type=radio]:checked + .graphAccordionTabLabel::after {
+  transform: rotateX(180deg);
+}
+
+.returnLink {
+  font-size: 1.5em;
+}
+
+.possibleDelete{
+  font-size: 1.5em;
+  color: red;
+}
+
+.menuSpacer {
+  padding-bottom: 15px;
+}
+
+.returnLink {
+  margin-bottom: 20px;
+}
+
+.returnLink:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
+

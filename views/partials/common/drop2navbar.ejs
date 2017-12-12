@@ -1,0 +1,56 @@
+<nav class="navbar navbar-toggleable-md bg-primary">
+    <div class="container">
+      <div class="navbar-translate">
+        <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-bar"></span>
+          <span class="navbar-toggler-bar"></span>
+          <span class="navbar-toggler-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/home">
+          <i class="fa fa-3x fa-home" id="brandIcon"></i>
+          <span id="brandTitle" class="">ELLE Portal</span>
+        </a>
+      </div>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="btn btn-info btn-round navButton" rel="tooltip" title="Select User Logs to Export" data-placement="bottom" href="/userlog">
+                <i class="fa fa-2x fa-database" id="databaseIcon"></i>
+                <!--<img class="navImage" src="assets/img/icons/menu-db.png">-->
+                <p class="hidden-lg-up">Download Logs</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-success btn-round navButton" rel="tooltip" title="Add or Edit Language Packs" data-placement="bottom" href="/languages">
+                <i class="fa fa-2x fa-pencil-square-o"></i>
+                <!--<img class="navImage" src="assets/img/icons/languageBlock1.png">-->
+                <p class="hidden-lg-up">Language Tools</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-warning btn-round navButton" rel="tooltip" title="Manage your Personal Assets" data-placement="bottom" href="/assets">
+                  <i class="fa fa-2x fa-book"></i>
+                  <!--<img class="navImage" src="assets/img/icons/menu-book.png">-->
+                  <p class="hidden-lg-up">Edit My Assets</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a id="pendingBtn" class="btn btn-round navButton pendingAlive hide" rel="tooltip" title="You Have Admins Waiting for Your Approval!" data-placement="bottom" href="/settings/pendingAdmins">
+                <i class="fa fa-2x fa-user-plus"></i>
+                <!--<img class="navImage" src="assets/img/icons/menu-gear.png">-->
+                <p class="hidden-lg-up">Pending Admins</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-default btn-round navButton" rel="tooltip" title="Logout" data-placement="bottom" href="/" id="logoutButton">
+                <i class="fa fa-2x fa-sign-out"></i>
+                <!--<img class="navImage" src="assets/img/icons/menu-gear.png">-->
+                <p class="hidden-lg-up">Logout Account</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+    </div>
+</nav>
+
+<input type="hidden" id="hasToken" value="false">

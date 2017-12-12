@@ -1,0 +1,134 @@
+<% include partials/common/drop1beforeTitle %>
+  <title>My Groups</title>
+  <link rel="stylesheet" href="../stylesheets/assets/myGroups.css">
+<% include partials/tables/includes/drop1allTableIncludes %>
+<% include partials/common/navbar %>
+
+  <div class="container pageContent">
+    
+      <div class="content-table content-final text-center">
+          <h2 class="titleHeader">My Groups</h2>
+          <a href="/assets" class="returnLink">Return to Assets Menu</a>
+          <hr>
+          <% include partials/tables/html/myGroups %>
+      </div>
+      
+    <div class="modal" id="deleteConfirm" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="modalTitle">Confirm Group Deletion
+            </h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group text-center">
+              <p class="modalText">Are you sure you want to use Delete this Group?</p>
+              <span class="possibleDelete"></span>
+              <p class="modalText">Once submitted, these changes cannot be undone.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modalBtn" data-dismiss="modal">Close</button>
+            <button type="button"  id="confirmDelete" class="btn btn-danger modalBtn" data-dismiss="modal">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+      
+    
+  </div>
+  
+  <div class="pageEnder"></div>
+  
+  <% include partials/common/timeoutLogin %>
+  
+
+
+<% include partials/tables/js/myGroups %>
+<% include partials/common/drop1footer %>
+<% include partials/common/auth %>
+<script>
+
+
+$(function() {
+  
+  checkToken();
+  //  btn-group causes graphical errors when the screen gets small
+  
+  var myGroups = $('#myGroups').DataTable();
+  
+  $('#hasToken').change(function(){
+    <% include partials/common/pendingAdmin %>
+    
+    var groups = new XMLHttpRequest();
+    groups.open("GET", 'http://159.203.163.147/group', true);
+    groups.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    
+    groups.onreadystatechange = function () {
+      if(groups.readyState == XMLHttpRequest.DONE && groups.status == 200) {
+        var response = JSON.parse(groups.responseText);
+        var entry = 1;
+        for (var i=0; i<response.groups.length; ++i){
+          var numPlayers = 0;
+          var group = response.groups[i];
+          if (group.admin == sessionStorage.getItem('ELLE-author')){
+            
+            myGroups.row.add(["", entry, group.groupName]).draw(false);
+            entry++;
+          }
+          
+        }
+        
+        setTimeout(function() {
+          $('.resizeButton').click();
+        }, 200)
+      }
+      else {}
+    }
+    
+    groups.send(null);
+  });
+  
+  $(".btn-group").removeClass("btn-group");
+  
+  // $('#myGroups tbody').on('dblclick', 'tr', function () {
+  //   $('.editButton').click();
+  //     // window.location = "/assets/myGroups/edit";
+  // });
+  
+  $('#confirmDelete').click(function(){
+
+    var data = myGroups.row('.selected').data();
+    
+    var deleteGroupJSON = {
+      'groupName': data[2],
+    }
+    
+    var deleteGroupJSONreq = JSON.stringify(deleteGroupJSON);
+    
+    var deleteGroup = new XMLHttpRequest();
+    deleteGroup.open("DELETE", 'http://159.203.163.147/group', true);
+    deleteGroup.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
+    deleteGroup.setRequestHeader("Content-Type", "application/json");
+    
+    deleteGroup.onreadystatechange = function () {
+      if(deleteGroup.readyState == XMLHttpRequest.DONE && deleteGroup.status == 200) {
+            var response = JSON.parse(deleteGroup.responseText);
+            myGroups.row('.selected').remove().draw(false);
+        }
+        else {
+          // var response = JSON.parse(deleteGroup.responseText);
+        }
+    }
+    
+    deleteGroup.send(deleteGroupJSONreq);
+  
+  });
+});
+
+</script>
+    

@@ -1,0 +1,24 @@
+  </body>
+  <!-- Core JS Files (jQuery is in beforeTitle-->
+  <script src="../assets/js/tether.min.js" type="text/javascript"></script>
+  <script src="../assets/js/popper.min.js" type="text/javascript"></script>
+  <script src="../assets/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../assets/js/bootstrap-beta.min.js" type="text/javascript"></script>
+
+  <!-- Switches -->
+  <script src="../assets/js/bootstrap-switch.min.js"></script>
+  <script src="../assets/js/paper-kit.min.js"></script>
+  <script>
+  $(function() {
+    
+    $('#logoutButton').click(function() {
+      
+      sessionStorage.removeItem("ELLE-JWT-token");
+      sessionStorage.removeItem("ELLE-author");
+      window.location = "/";
+    })
+    
+    
+  });
+  </script>
+</html>

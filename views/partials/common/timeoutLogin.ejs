@@ -1,0 +1,126 @@
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+    	<div class="modal-content">
+    		<div class="modal-header" align="center">
+    		</div>
+                
+        <!-- Begin # DIV Form -->
+        <div id="div-forms">
+          <!-- Begin # Login Form -->
+          <form id="login-form">
+            <div class="modal-body">
+              <div class="loginTitle text-center">
+              </div>
+      		    <div id="div-login-msg">
+                <i id="icon-login-msg" class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                <span id="text-login-msg">Login</span>
+              </div>
+              <div class="form-group">
+                <label for="login_username" class="control-label">Username</label>
+            		<input id="login_username" class="form-control" type="text" placeholder="username" required>
+              </div>
+              <div class="form-group">
+                <label for="login_password" class="control-label">Password</label>
+            		<input id="login_password" class="form-control" type="password" placeholder="password" required>
+              </div>
+          	</div>
+            <div class="modal-footer">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-10 offset-1">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                  </div>
+          	      <div class="col-10 offset-1">
+                    <button id="login_lost_btn" type="button" class="btn btn-link" onclick="window.location = '/'">Back to Landing Page</button>
+                </div>
+              </div>
+            </div>
+          </form>
+            <!-- End # Login Form -->
+        </div>
+        <!-- End # DIV Form -->
+                
+			</div>
+		</div>
+	</div>
+    <!-- END # MODAL LOGIN -->
+    
+  <script>
+  
+  var modalAnimateTime = 300;
+  var msgAnimateTime = 150;
+
+  function msgFade (msgId, msgText) {
+    msgId.fadeOut(msgAnimateTime, function() {
+      $(this).text(msgText).fadeIn(msgAnimateTime);
+    });
+  }
+  
+  function messageChange(divTag, iconTag, textTag, newDivClass, newIconClass, msgText){
+    msgFade(textTag, msgText);
+    divTag.removeClass("success error");
+    divTag.addClass(newDivClass);
+    iconTag.removeClass("success error");
+    iconTag.removeClass(function() {
+      return (this.className.match(/\bfa-[\S]{1,}/g) || []).join(' ');
+    });
+    iconTag.addClass(newIconClass);
+    iconTag.addClass(newIconClass + " " + newDivClass);
+  }
+  
+  $(function(){
+    
+    $('#login-modal').on('shown.bs.modal', function(){
+      $("#login_username").focus();
+    });
+    $('#login_username').keypress(function(event) {
+      if (event.keyCode == 13 || event.which == 13) {
+          $('#login_password').focus();
+          event.preventDefault();
+      }
+    });
+    $('#login_password').keypress(function(event){
+      if (event.keyCode == 13 || event.which == 13){
+        $('#login-form').submit();
+      }
+    });
+    
+     $('#login-form').submit(function(event){
+      event.preventDefault();
+
+      var credentialsJSON = {
+        'username': $('#login_username').val(),
+        'password': $('#login_password').val()
+      }
+      var credentialsJSONreq = JSON.stringify(credentialsJSON);
+      
+      var auth = new XMLHttpRequest();
+      auth.open("POST", 'http://159.203.163.147/auth', true);
+      auth.setRequestHeader("Content-Type", "application/json");
+      
+      //  What to do if the Auth passes/fails
+      auth.onreadystatechange = function () {
+        if(auth.readyState == XMLHttpRequest.DONE && auth.status == 200) {
+              var response = JSON.parse(auth.responseText);
+              sessionStorage.setItem('ELLE-JWT-token', response.access_token);
+              sessionStorage.setItem('ELLE-author', $('#login_username').val());
+              messageChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "success", "fa-check-square-o", "Login Accepted!");
+              // authorized  = true;
+              $('#hasToken').val("true").trigger('change');
+              setTimeout(function(){
+                location.reload();
+              }, 1000)
+          }
+          else if (auth.status == 401) {
+            messageChange($('#div-login-msg'), $('#icon-login-msg'), $('#text-login-msg'), "error", "fa-exclamation-circle", "Invalid user or password");
+          }
+      }
+      
+      //  Send the Auth request
+      auth.send(credentialsJSONreq);
+    });
+  });
+    
+  </script>
+    
+  

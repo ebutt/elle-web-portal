@@ -1,0 +1,95 @@
+#permissionsNote1{
+    margin-top: 10px;
+}
+
+#permissionsNote2 {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.control-label {
+    font-size: large;
+}
+
+.selectLabel {
+  background: #56ab2f;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.beforeTable {
+  margin-bottom: 40px;
+}
+
+#languageID {
+  margin-bottom: 50px;
+}
+
+
+
+
+input:checked ~ .bigAccordionTab-content {
+  max-height: 750px;
+}
+
+.tabInput {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+
+
+/* :checked */
+input:checked ~ .accordionTab-content {
+  max-height: 500px;
+}
+
+ /*Icon */
+.bigAccordionTabLabel::after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 3em;
+  height: 3em;
+  line-height: 3;
+  text-align: center;
+  -webkit-transition: all .35s;
+  -o-transition: all .35s;
+  transition: all .35s;
+}
+
+input[type=checkbox] + label::after {
+  content: "+";
+}
+/*input[type=radio] + label::after {*/
+/*  content: "\25BC";*/
+
+input[type=checkbox]:checked + .bigAccordionTabLabel::after {
+  transform: rotate(315deg);
+}
+/*input[type=radio]:checked + label::after {*/
+/*  transform: rotateX(180deg);*/
+/*}*/
+
+th {
+  font-weight: normal;
+}
+#publicWarning {
+  /*display: none;*/
+}
+
+#cloneSettings, #permissionsSettings {
+  display: none;
+}
+
+#editPermissions_filter label {
+  /*color: purple;*/
+  /*margin: 0 auto;*/
+  /*text-align: center;*/
+}
+
+#form-langSearch {
+  margin-bottom: 200px;
+}

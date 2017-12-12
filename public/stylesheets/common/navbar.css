@@ -1,0 +1,97 @@
+.navbar .container {
+    /*margin-left: 50px;*/
+    /*margin-right: 50px;*/
+}
+
+.nav-item .btn.btn-round {
+    max-width: 175px;
+}
+
+
+
+.navbar .navbar-brand{
+    padding: 0;
+}
+
+.nav-item{
+    margin: 5px 0;
+}
+
+.navButton {
+-webkit-box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.3);
+-moz-box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.3);
+box-shadow: 0px 2px 2px 1px rgba(0,0,0,0.3);
+}
+
+.navbar-collapse .navbar-nav .nav-item .navButton:hover{
+    /*transform: translateX(-12px);*/
+  /* transform: translateY(-10px);*/
+  /*-webkit-transform: translateY(-10px);*/
+  /*-ms-transform: translateY(-10px);*/
+  /*-moz-transform: translateY(-10px);*/
+  text-decoration: underline;
+  /*color: black;*/
+  
+}
+
+#brandTitle {
+    margin-left: 25px;
+    font-size: 1.5em;
+}
+
+#brandIcon {
+    margin-left: 15px;
+}
+
+.navbar-collapse {
+    overflow: auto;
+    float: right;
+    /*overflow: scroll;*/
+    /*background-color: #FFFCF5;*/
+}
+
+.navbar-collapse::after{
+    background-color: #FFFCF5;
+    /*overflow: scroll;*/
+}
+
+.navSpacer {
+    min-height: 1px;
+    margin-top: 60px;
+}
+
+#navbarToggler::after {
+    border-left: 3px solid black;
+}
+
+#navbarToggler::after .navbar-nav .nav-item .btn{
+    
+}
+
+
+.navImage {
+    width: 24px;
+    /*margin: 5px;*/
+    /*margin-bottom: 8px;*/
+}
+
+.hidden-lg-up{
+    margin-top: 5px;
+    /*color: black;*/
+    font-weight: bold;
+    /*text-decoration: underline;*/
+}
+
+.pendingAlive {
+    background-color: #c989e5;
+}
+
+.pendingAlive:hover {
+    background-color: #7e30a0;
+    border-color: #7e30a0;
+}
+
+
+
+
+

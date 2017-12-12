@@ -1,0 +1,83 @@
+#myChart {
+    margin: 0 auto;
+    max-height: 450px;
+    max-width: 1000px;
+    padding: 30px;
+}
+
+#myChart2{
+    margin: 0 auto;
+    max-height: 400px;
+    max-width: 400px;
+    padding: 30px;
+}
+
+#myChart3{
+    margin: 0 auto;
+    max-height: 450px;
+    max-width: 1000px;
+    padding: 30px;
+}
+
+canvas {
+  padding: 20px 10px;
+}
+
+.selectLabel {
+background: #56ab2f;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.logsLabel {
+background: #667db6;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #667db6, #0082c8, #0082c8, #667db6);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #667db6, #0082c8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+color: #2e2e30;
+  
+}
+
+.bigLabel{
+  font-size: 2em;
+}
+
+#groupSelect option{
+  font-size: large;
+  padding: 10px 0;
+}
+
+.helpNote {
+  margin: 0;
+}
+
+input:checked ~ .bigAccordionTab-content {
+  max-height: 100000px;
+}
+
+/* :checked */
+input:checked ~ .graphAccordionTab-content {
+  max-height: 500px;
+}
+
+#form-userSearch {
+  margin-bottom: 200px;
+}
+
+.modalInput {
+  margin-bottom: 10px;
+}
+
+.modalLabel {
+  text-decoration: underline;
+  font-size: medium;
+}
+
+.modal-title {
+  font-weight: bold;
+  
+}
+
+#advSelectButton, #resetAdvSelectButton {
+  margin-bottom: 20px;
+}
+

@@ -1,0 +1,274 @@
+<script>
+ var advSwitch = false;
+
+$(document).ready(function() {
+    var databaseLogs = $('#databaseLogs').DataTable( {
+        language: {
+                "lengthMenu": "Display _MENU_ entries per page",
+                "zeroRecords": "Nothing Found - Sorry",
+                "info": "Page _PAGE_ of _PAGES_",
+                "infoEmpty": "No Entries Available",
+                "infoFiltered": "(out of _MAX_ entries)"
+        },
+        dom: '<"col-12"fBtip>',
+        responsive: {
+            details: {
+                type: 'inline'
+            }
+        },
+        select: {
+            style: "multi+shift",
+            selector: 'tr>td:nth-child(2), tr>td:nth-child(3), tr>td:nth-child(4), tr>td:nth-child(5), tr>td:nth-child(6), tr>td:nth-child(7)'
+
+        },
+        columnDefs: [ 
+            {
+                className: 'control',
+                orderable: false,
+                targets:   0
+            },
+            {
+                targets: [7, 8],
+                visible: false,
+                searchable: false
+            }
+        ],
+        order: [ 1, 'asc' ],
+        processing: true,
+        pagingType: 'first_last_numbers',
+        // lengthChange: true,
+        pageLength: 20,
+        caseInsensitive: true,
+        buttons: [
+            {
+                extend:'colvis',
+                className: 'hideButton btn-info',
+                columns: ':gt(1)',
+                text: 'Hide'
+            },
+            {
+                text: 'Export',
+                className: 'exportButton btn-success',
+                action: function() {
+                    
+                    //    Make each remaining file in the Log Data Table a CSV, packaked using the JSZip library
+                    var zip = new JSZip();
+                    var testData;
+                    databaseLogs.rows().every (function(){
+                    var data = this.data();
+                       
+                    //   data[0] = null (the control column)
+                    //   data[1] = Username
+                    //   data[2] = Entry # 
+                    //   data[3] = Game Type
+                    //   data[4] = Module
+                    //   data[5] = Version
+                    //   data[6] = Score
+                    //   data[7] = logID (hidden)
+                    //   data[8] = Log data (hidden)
+                       
+                       
+                       //    Don't bother if there is no log data
+                       if (data[8] == undefined){
+                           return;
+                       }
+                       
+                       //    Check to make sure something valid is actually in the log data before adding it
+                       //    Ths simple test should pass for any log file, since it is literally checking to 
+                       //    see if a single question was asked to the player
+                       if (data[8].indexOf("T-T") != -1 ||
+                           data[8].indexOf("A-T") != -1 ||
+                           data[8].indexOf("I-T") != -1 ||
+                           data[8].indexOf("A-I") != -1 ||
+                           data[8].indexOf("T-I") != -1 ||
+                           data[8].indexOf("I-I") != -1 ){
+                               
+                            //    Thanks to JSZip, this filename will automatically place logs from each user
+                            //    into thier own folder in the ZIP file, with their username as the foldername
+                            //    and each log labeled as "{username} log{logID"
+                           var fileName = data[1] + "/" + data[1] + " log" +  data[7] + '.csv';
+
+                           // The Log Info
+                           var csvString = "User,LogID,Game Type,Module,Version,Score,\n";
+                           csvString += data[1] + ",";
+                           csvString += data[7] + ",";
+                           csvString += data[3] + ",";
+                           csvString += data[4] + ",";
+                           csvString += data[5] + ",";
+                           csvString += data[6] + "\n\n";
+                           //   The Actual Log Info
+                           csvString += data[8];
+                           
+
+                           zip.file(fileName, csvString);
+                       }
+                    });
+                    //    Create a unique time-stamped filename for the ZIP folder using the DateTime
+                    var d = new Date();
+                    var outputTitle = 'ELLE-Logs ' + (d.getMonth() + 1) + '-' + d.getDate()  + '-' + 
+                                            d.getFullYear() + ' (' +  d.getHours() + ';' +
+                                            d.getMinutes() + ').zip';
+                    
+                   zip.generateAsync({type:"blob"}).then(function(content) {
+                        // see FileSaver.js
+                        saveAs(content, outputTitle );
+                    });
+                }
+            },
+            {
+                extend: 'collection',
+                text: 'Selection',
+                className: 'selectionButton btn-warning',
+                buttons: [
+                    {
+                        text: "Use Only Selected Module(s)",
+                        className: 'modSelectButton',
+                        action: function() {
+                            if (databaseLogs.rows('.selected').count() == 0){
+                                return;
+                            }
+                            var selected = [];
+                            databaseLogs.rows('.selected').every( function ( ) {
+                                var data = this.data();
+                                selected.push(data[4]);
+                            } );
+                            databaseLogs.rows().every(function (){
+                               var data = this.data();
+                               var lang = data[4];
+                               
+                               var matchFound = false;
+                               for (var i=0; i<selected.length; i++){
+                                    if (lang == selected[i]){
+                                        this.deselect();
+                                        matchFound = true;
+                                        break;
+                                    }
+                                }
+                                if (!matchFound){
+                                    this.select();
+                                }
+                            });
+                            databaseLogs.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: "Use Only Selected User(s)",
+                        className: 'modSelectButton',
+                        action: function() {
+                            if (databaseLogs.rows('.selected').count() == 0){
+                                return;
+                            }
+                            var selected = [];
+                            databaseLogs.rows('.selected').every( function ( ) {
+                                var data = this.data();
+                                selected.push(data[1]);
+                            } );
+                            databaseLogs.rows().every(function (){
+                               var data = this.data();
+                               var user = data[1];
+                               
+                               var matchFound = false;
+                               for (var i=0; i<selected.length; i++){
+                                    if (user == selected[i]){
+                                        this.deselect();
+                                        matchFound = true;
+                                        break;
+                                    }
+                                }
+                                if (!matchFound){
+                                    this.select();
+                                }
+                            });
+                            databaseLogs.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Clear Selections',
+                        className: 'clearButton',
+                        action: function ( ) {
+                            databaseLogs.rows().deselect();
+                        }
+                    },
+                    {
+                        text: 'Remove Selections',
+                        className: 'removeSelectButton',
+                        action: function ( ) {
+                            databaseLogs.rows('.selected').remove().draw(false);
+                        }
+                    },
+                    {
+                        text: 'Restore Original Logs',
+                        className: 'removeNotSelectButton',
+                        action: function ( ) {
+                            
+                            if (advSwitch == false){
+                                
+                                grabLogs(selectType);
+                            }
+                            else {
+                                advGrabLogs(advSelectType);
+                            }
+                        }
+                    },
+                    {
+                        text: 'Clear this Table',
+                        className: 'clearAllButton',
+                        action: function ( ) {
+                            databaseLogs.clear().draw(false);
+                        }
+                    }
+                ]
+            },
+            
+            {
+                extend: 'collection',
+                text: 'Filter Data',
+                className: 'filterButton btn-danger',
+                buttons: [
+                    {
+                        text: 'Filter Options',
+                        className: 'filterButton',
+                        action: function ( ) {
+                            $('#dataSortModal').modal();
+                        }
+                    },
+                    {
+                        text: 'Reset Filters',
+                        className: 'filterButton',
+                        action: function(){
+                            $("#typeSelect").val(0);
+                            $("#minEntryNum").val('');
+                            $("#maxEntryNum").val('');
+                            $("#minVersion").val('');
+                            if (advSwitch == false){
+                                grabLogs(selectType);
+                            }
+                            else {
+                                advGrabLogs(advSelectType);
+                            }
+                        }
+                    },
+                ]
+            }
+        ],
+    } );
+    
+    new $.fn.dataTable.Buttons (databaseLogs, {
+        buttons: [
+            {
+              text: 'Resize',
+              className: 'resizeButton secondSetBtn hide',
+              action: function () {
+                  databaseLogs.responsive.recalc();
+              }
+            }
+        ]
+    });
+    
+    databaseLogs.buttons( 1, null ).container().appendTo(
+        databaseLogs.table().container()
+    );
+    
+    
+} );
+</script>

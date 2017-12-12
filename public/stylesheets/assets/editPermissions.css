@@ -1,0 +1,13 @@
+.control-label {
+    margin-top: 20px;
+    font-size: large;
+    text-decoration: underline;
+}
+
+#addMember {
+    margin-bottom: 30px;
+}
+
+th {
+    font-weight: normal;
+}

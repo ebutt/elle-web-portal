@@ -1,0 +1,131 @@
+<% include partials/common/drop2beforeTitle %>
+  <title>Create a New Language</title>
+  <link rel="stylesheet" href="../../stylesheets/assets/editPermissions.css">
+<% include partials/tables/includes/drop2allTableIncludes %>
+<% include partials/common/afterTitle %>
+<% include partials/common/navbar %>
+
+  <div class="container pageContent">
+      
+      <div class="content-form">
+          <form>
+            <h2 class="titleHeader">Pack Permissions List</h2>
+            <div class="text-center menuSpacer">
+              <a href="/assets/myPacks" class="returnLink">Return to Packs Menu</a>
+            </div>
+            <div class="text-center">
+                <h3 class="currentDeclare">Current Language: </h3>
+                <h3 class="currentValue"><span id="currentlanguage">NAME HERE</span></h3>
+            </div>
+            <hr>
+            <form>
+              <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+                <label for="groupRadio1" class="control-label">Permissions Type</label>
+                <div class="row">
+                  <div class="col-6">
+                    <div class="radio">
+                     <input type="radio" name="groupRadio" id="groupRadio1" value="groupOption1">
+                     <label for="groupRadio1">
+                       User
+                     </label>
+                   </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="radio">
+                     <input type="radio" name="groupRadio" id="groupRadio2" value="groupOption2">
+                     <label for="groupRadio2">
+                       Admin
+                     </label>
+                   </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            
+            <div class="nav-tabs-navigation">
+              <div class="nav-tabs-wrapper">
+                <ul id="tabs" class="nav nav-tabs" role="tablist">
+                  <li class="nav-item quick-select">
+                    <a class="nav-link active" data-toggle="tab" href="#addSelect" role="tab">Add Member</a>
+                  </li>
+                  <!--<li class="nav-item table-select">-->
+                  <!--  <a class="nav-link" data-toggle="tab" href="#removeSelect" role="tab">Remove Member</a>-->
+                  <!--</li>-->
+                </ul>
+              </div>
+            </div>
+            <div id="my-tab-content" class="tab-content">
+              <div class="tab-pane active text-center" id="addSelect" role="tabpanel">
+                <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">
+                  <label for ="addMember" class="control-label sr-only">Add a New Member</label>
+                  <input type="text" class="form-control" id="addMember" placeholder="add username">
+                </div>
+              </div>
+              <!--<div class="tab-pane text-center" id="removeSelect" role="tabpanel">-->
+              <!--  <div class="form-group col-10 offset-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3">-->
+              <!--    <label for ="removeMember" class="control-label">Remove a Member</label>-->
+              <!--    <input type="text" class="form-control" id="removeMember" placeholder="username">-->
+              <!--  </div>-->
+              <!--</div>-->
+            </div>
+            
+
+            
+            <div class="form-group col-10 offset-1 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+              <% include partials/tables/html/editPermissions %>
+            </div>
+
+            <div class="form-group col-10 offset-1 col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center">
+              <button type="submit" id="submitPermissions" class="btn btn-success btn-top btn-lg">Submit</button>
+            </div>
+          </form>
+      </div>
+
+  </div>
+
+<% include partials/common/drop2footer %>
+<% include partials/tables/js/editPermissions %>
+<script>
+
+
+  //  btn-group causes graphical errors when the screen gets small
+$(function() {
+  $(".btn-group").removeClass("btn-group");
+  
+  $('#submitPermissions').click(function() {
+    window.location = "/assets/myPacks"
+  })
+  
+  var editPermissions =$('#editPermissions').DataTable();
+  
+  $('#addMember').on("keyup", function(e) {
+    if (e.keyCode == 13) {
+        //  Add row to table
+        editPermissions.row.add( [ "", this.value ]).draw(false);
+        this.value = "";
+    }
+  });
+    // var t = $('#editGroup').DataTable();
+    
+    // $("#addMember").change(function() {
+    //   var addVal = $("#addMember").val();
+    //   console.log(addVal);
+    //   t.row.add($("#addMember").val())
+    // });
+    // // Automatically add a first row of data
+    // $('#addRow').click();
+} );
+
+
+// var table = $("#editGroup").DataTable();
+
+// $("#addMember").change(function() {
+//   table.row.add($("#addMember").val())
+// });
+
+
+
+
+
+</script>
+    

@@ -1,0 +1,76 @@
+.content-text {
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+
+.content-title {
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.content-text.content-final, .content-form.content-final, .content-table.contenet-final {
+    margin-bottom: 40px;
+}
+
+.content-title {
+    background-color: #fdfdfd;
+    border: 1px solid black;
+    /*margin-top: 0px;*/
+    margin-bottom: 20px;
+}
+
+.content-table {
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid black;
+    margin-bottom: 20px;
+}
+
+.content-graph {
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid black;
+    margin-bottom: 10px;
+}
+
+.content-form {
+    
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid black;
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.textInputBox {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.audioInputBox {
+    padding-top: 15px;
+}
+
+.imageInputBox {
+    padding-top: 15px;
+}
+
+.imagePreviewBox {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.editTermBox {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+
+.editTermBox {
+    padding-bottom: 10px;
+}

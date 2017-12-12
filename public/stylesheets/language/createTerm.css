@@ -1,0 +1,155 @@
+.termFileUpload, .termText2Speech, .transFileUpload, .transText2Speech {
+    display: none;
+}
+
+#termFile, #transFile, #imageFile {
+  margin-bottom: 20px;
+}
+
+.cloneSettings, .publicWarning, .permissionsSettings {
+    display: none;
+}
+
+.currentValue {
+    
+}
+
+.inputDnD .form-control-file {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 6em;
+  outline: none;
+  visibility: hidden;
+  cursor: pointer;
+  background-color: #565454;
+  box-shadow: 0 0 5px #565454;
+}
+.inputDnD .form-control-file:before {
+  content: attr(data-title);
+  position: absolute;
+  top: 0.5em;
+  left: 0;
+  width: 100%;
+  min-height: 6em;
+  line-height: 2em;
+  padding-top: 1.5em;
+  opacity: 1;
+  visibility: visible;
+  text-align: center;
+  border: .25em dashed #565454;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+.inputDnD .form-control-file:hover:before {
+  border-style: solid;
+  box-shadow: inset 0px 0px 0px 0.25em #565454;
+}
+
+.currentDeclare {
+  text-decoration: underline;
+}
+
+form {
+  margin-top: 0px;
+}
+.formButton {
+  /*margin: 10px;*/
+}
+
+.control-label {
+  margin-top: 20px;
+  text-align: center;
+  font-size: x-large;
+  text-decoration: underline;
+}
+
+.previewBox {
+  border: 1px solid black;
+  background-image: url('../../assets/img/backgrounds/hypnotize.png');  
+}
+
+
+#imagePreview {
+  margin: 0 auto;
+  max-width: 200px;
+  padding: 10px;
+}
+
+.modalBtn{
+  /*margin: 10px 0;*/
+}
+
+.modalFooter {
+  text-align: center;
+}
+
+#modalTitle {
+  font-weight: bold;
+}
+
+.modal-static-text{
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.fa-exclamation-triangle{
+  color: yellow;
+}
+
+#modal-foundErrors li{
+  font-size: large;
+  margin: 5px 0;
+}
+
+.audio-label {
+  margin-top: 10px;
+}
+
+.audioSpacer {
+  clear: both;
+  visibility: hidden;
+  margin: 5px;
+}
+
+.form-group {
+  margin-bottom: 5px;
+}
+.termNoteSep {
+  clear: both;
+  visibility: hidden;
+  margin: 2px 0;
+}
+
+#termNote {
+  text-decoration: none;
+  font-size: medium;
+}
+
+#audioButton {
+  margin-top: 20px;
+}
+
+.audioText {
+  font-size: medium;
+}
+
+#audacityTutorial1{
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+#audacityTutorial2{
+  max-width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.audioModalSpacer {
+   clear: both;
+  visibility: hidden;
+  margin: 4px 0;
+}
