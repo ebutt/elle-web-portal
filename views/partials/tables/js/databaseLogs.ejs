@@ -86,7 +86,7 @@ $(document).ready(function() {
                             //    Thanks to JSZip, this filename will automatically place logs from each user
                             //    into thier own folder in the ZIP file, with their username as the foldername
                             //    and each log labeled as "{username} log{logID"
-                           var fileName = data[1] + "/" + data[1] + " log" +  data[7] + '.csv';
+                           var fileName = data[1] + "/" + data[1] + " log" +  data[2] + '.csv';
 
                            // The Log Info
                            var csvString = "User,LogID,Game Type,Module,Version,Score,\n";
@@ -201,13 +201,7 @@ $(document).ready(function() {
                         className: 'removeNotSelectButton',
                         action: function ( ) {
                             
-                            if (advSwitch == false){
-                                
-                                grabLogs(selectType);
-                            }
-                            else {
-                                advGrabLogs(advSelectType);
-                            }
+                            grabLogs();
                         }
                     },
                     {
@@ -240,12 +234,7 @@ $(document).ready(function() {
                             $("#minEntryNum").val('');
                             $("#maxEntryNum").val('');
                             $("#minVersion").val('');
-                            if (advSwitch == false){
-                                grabLogs(selectType);
-                            }
-                            else {
-                                advGrabLogs(advSelectType);
-                            }
+                            grabLogs();
                         }
                     },
                 ]

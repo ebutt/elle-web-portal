@@ -527,36 +527,19 @@
       
       if (users.indexOf(user) != -1){
         
-        var userData = new XMLHttpRequest();
-        var urlString = 'http://159.203.163.147/log/player/' + $('.js-typeahead-userSearch').val();
-        userData.open("GET", urlString, true);
-        userData.setRequestHeader('Authorization', 'JWT ' + sessionStorage.getItem('ELLE-JWT-token'));
-
-        userData.onreadystatechange = function () {
-          if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
-            
-              databaseLogs.clear().draw(false);
-              var response = JSON.parse(userData.responseText);
-
-              for (var i=0; i<response.logs.length; ++i){
-                var log = response.logs[i];
-                databaseLogs.row.add( ["", $('.js-typeahead-userSearch').val(), (i+1), log.game_type, log.lang_name, log.lang_version, log.score, log.logID, log.puzzles_attempted]).draw(false);
-              }
-              
-              if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
-              
-              $('html, body').animate({
-                scrollTop: $("#bigTab-data-one").offset().top
-              }, 1500);
-              
-              $('.logData-resizeButton').click();
-              
-          }
-          else {
-          }
-        }
+        hiddenUserTable.rows().deselect();
         
-        userData.send(null);
+        hiddenUserTable.rows().eq(0).each(function(index){
+          var row = hiddenUserTable.row (index);
+          
+          var data = row.data();
+          
+          if (user == data[1]){
+            row.select();
+          }
+        });
+        
+        grabLogs();
 
       }
     });

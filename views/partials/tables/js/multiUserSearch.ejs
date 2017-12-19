@@ -1,29 +1,20 @@
 <script>
 
+//var hiddenUserTable = $("#hiddenUserTable").DataTable();
 var selectType;
 
 //    Function for grabbing the logs of selected user(s). This function
 //    is needed to store the type of selection that was used to create the
 //    Log Data table so that it can restore itself if the user is not satisfied with
 //    how they have filtered their log file data and want to reset the avaiable logs
-function grabLogs(selectedSwitch){
+function grabLogs(){
     
-    advSwitch = false;    //    needed to differentiate if Log Data Table source is from here or advance select
-    var multiUserSearch = $("#multiUserSearch").DataTable();
-    var selectSwitch;
-    if (selectedSwitch === "Y"){
-        selectSwitch = ".selected";
-        selectType = "Y";
-    }
-    else {
-        selectSwitch = ""
-        selectType = "N";
-    }
 
+    var hiddenUserTable = $("#hiddenUserTable").DataTable();
     var databaseLogs = $('#databaseLogs').DataTable();
     databaseLogs.clear().draw(false);
     
-    multiUserSearch.rows(selectSwitch).every(function(){
+    hiddenUserTable.rows('.selected').every(function(){
         var data = this.data();
         var userData = new XMLHttpRequest();
         var urlString = 'http://159.203.163.147/log/player/' + data[1];
@@ -59,11 +50,14 @@ function grabLogs(selectedSwitch){
 
       if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
       
-      $('html, body').animate({
-        scrollTop: $("#bigTab-data-one").offset().top
-      }, 1500);
-      
-      $('.logData-resizeButton').click();
+      setTimeout(function(){
+          
+          $('html, body').animate({
+            scrollTop: $("#bigTab-data-one").offset().top
+          }, 1500);
+          
+          $('.logData-resizeButton').click();
+      }, 250)
                
 }
 
@@ -204,21 +198,57 @@ $(document).ready(function() {
                 buttons: [
                     {
                         text: "Logs for Selected Users",
-                        className: 'useSelectedUsers',
+                        className: '',
                         action: function() {
                             if (multiUserSearch.rows('.selected').count() == 0){
                                 return;
                             }
                             else {
-                                grabLogs("Y");
+                                
+                                var hiddenUserTable = $("#hiddenUserTable").DataTable();
+                                hiddenUserTable.rows().deselect();
+                                var chosenUsers = [];
+                                
+                                multiUserSearch.rows('.selected').every(function() {
+                                    var data = this.data();
+                                    chosenUsers.push(data[1]);
+                                });
+                                
+                                hiddenUserTable.rows().eq(0).each(function(index){
+                                    var row = hiddenUserTable.row (index);
+                                    var data = row.data();
+                                    if (chosenUsers.indexOf(data[1]) != -1){
+                                        row.select();
+                                    }
+                                });
+                                
+                                grabLogs();
                             }
                         }
                     },
                     {
                         text: "Logs for All Users in Table",
-                        className: 'useSelectedUsers',
+                        className: '',
                         action: function() {
-                            grabLogs("N");
+                            
+                            var hiddenUserTable = $("#hiddenUserTable").DataTable();
+                            hiddenUserTable.rows().deselect();
+                            var chosenUsers = [];
+                            
+                            multiUserSearch.rows('.selected').every(function() {
+                                var data = this.data();
+                                chosenUsers.push(data[1]);
+                            });
+                            
+                            hiddenUserTable.rows().eq(0).each(function(index){
+                                var row = hiddenUserTable.row (index);
+                                var data = row.data();
+                                if (chosenUsers.indexOf(data[1]) != -1){
+                                    row.select();
+                                }
+                            });
+                            
+                            grabLogs();
                         }
                     },
                     {

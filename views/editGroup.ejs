@@ -291,20 +291,20 @@ $(function() {
   
   $('#groupName').keypress(function(event) {
     if (event.keyCode == 13 || event.which == 13) {
-        $('.js-typeahead-memberSearch').focus();
-        $('html, body').animate({
-          scrollTop: $(".js-typeahead-memberSearch").offset().top
-        }, 1000);
         event.preventDefault();
+        
+        setTimeout(function() {
+          $('html, body').animate({
+            scrollTop: $(".js-typeahead-memberSearch").offset().top
+          }, 1000);
+        }, 50)
+        setTimeout(function(){
+          $('.js-typeahead-memberSearch').focus();
+        }, 1000)
     }
   });
     
-
-
-    
 } );
-
-
 
 $('#form-groupInfo').submit(function(event){
   event.preventDefault();

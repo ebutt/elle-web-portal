@@ -16,7 +16,6 @@ app.use(express.static(__dirname + "/public"));
 
 app.use("/", indexRoutes);
 app.use("/userlog", userlogRoutes);
-app.use("/database", dataRoutes);
 app.use("/languages", languageRoutes);
 app.use("/assets", assetRoutes);
 app.use("/settings", settingRoutes);

@@ -2,24 +2,13 @@
 
 var advSelectType;
 
-function advGrabLogs(selectedSwitch){
+function grabLogs(){
     
-    advSwitch = true;
-    var userAdvanceSearch = $("#userAdvanceSearch").DataTable();
-    var selectSwitch;
-    if (selectedSwitch === "Y"){
-        selectSwitch = ".selected";
-        advSelectType = "Y";
-    }
-    else {
-        selectSwitch = ""
-        advSelectType = "N";
-    }
-
+    var hiddenUserTable = $("#hiddenUserTable").DataTable();
     var databaseLogs = $('#databaseLogs').DataTable();
     databaseLogs.clear().draw(false);
     
-    userAdvanceSearch.rows(selectSwitch).every(function(){
+    hiddenUserTable.rows('.selected').every(function(){
         var data = this.data();
         var userData = new XMLHttpRequest();
         var urlString = 'http://159.203.163.147/log/player/' + data[1];
@@ -29,7 +18,6 @@ function advGrabLogs(selectedSwitch){
         userData.onreadystatechange = function () {
           if(userData.readyState == XMLHttpRequest.DONE && userData.status == 200) {
               var response = JSON.parse(userData.responseText);
-
               for (var i=0; i<response.logs.length; ++i){
                   var log = response.logs[i];
                   
@@ -38,8 +26,10 @@ function advGrabLogs(selectedSwitch){
                       log.game_type == "tpp")         game_type ="TPP" 
                   else if (log.game_type == "TPO" ||
                            log.game_type == "tpo")    game_type ="TPO" 
-                  else                                game_type ="VR" 
-
+                  else if (log.game_type == "vr" ||
+                           log.game_type == "VR")     game_type ="VR" 
+                  else                                game_type = log.game_type
+                  
                   databaseLogs.row.add( ["", data[1], (i+1), game_type, log.lang_name, log.lang_version, log.score, log.logID, log.puzzles_attempted]).draw(false);
               }
           }
@@ -51,19 +41,17 @@ function advGrabLogs(selectedSwitch){
 
     });
     
-              
+
       if (!$('#bigTab-data-one').is(':checked') ) { $('#bigTab-data-one').click();}
       
-      $('html, body').animate({
-        scrollTop: $("#bigTab-data-one").offset().top
-      }, 1500);
-      
-      setTimeout(function() {
-          $('.resizeButton').click();
-      }, 100)
-      
-      
-    
+      setTimeout(function(){
+          
+          $('html, body').animate({
+            scrollTop: $("#bigTab-data-one").offset().top
+          }, 1500);
+          
+          $('.logData-resizeButton').click();
+      }, 250)
                 
 }
 
@@ -142,7 +130,25 @@ $(document).ready(function() {
                                 return;
                             }
                             else {
-                                advGrabLogs("Y");
+                                
+                                var hiddenUserTable = $("#hiddenUserTable").DataTable();
+                                hiddenUserTable.rows().deselect();
+                                var chosenUsers = [];
+                                
+                                userAdvanceSearch.rows('.selected').every(function() {
+                                    var data = this.data();
+                                    chosenUsers.push(data[1]);
+                                });
+                                
+                                hiddenUserTable.rows().eq(0).each(function(index){
+                                    var row = hiddenUserTable.row (index);
+                                    var data = row.data();
+                                    if (chosenUsers.indexOf(data[1]) != -1){
+                                        row.select();
+                                    }
+                                });
+                            
+                                grabLogs();
                             }
                         }
                     },
@@ -150,7 +156,24 @@ $(document).ready(function() {
                         text: "Logs for All Users in Table",
                         className: 'useSelectedUsers',
                         action: function() {
-                            advGrabLogs("N");
+                            var hiddenUserTable = $("#hiddenUserTable").DataTable();
+                            hiddenUserTable.rows().deselect();
+                            var chosenUsers = [];
+                            
+                            userAdvanceSearch.rows().every(function() {
+                                var data = this.data();
+                                chosenUsers.push(data[1]);
+                            });
+                            
+                            hiddenUserTable.rows().eq(0).each(function(index){
+                                var row = hiddenUserTable.row (index);
+                                var data = row.data();
+                                if (chosenUsers.indexOf(data[1]) != -1){
+                                    row.select();
+                                }
+                            });
+                        
+                            grabLogs();
                         }
                     },
                     {
