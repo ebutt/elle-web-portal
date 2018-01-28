@@ -452,6 +452,7 @@ $(function() {
       
       var auth = new XMLHttpRequest();
       auth.open("POST", 'http://159.203.163.147/auth', true);
+      // auth.setRequestHeader('Access-Control-Allow-Methods', 'POST');
       auth.setRequestHeader("Content-Type", "application/json");
     
       auth.onreadystatechange = function () {

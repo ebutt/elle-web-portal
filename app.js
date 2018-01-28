@@ -1,6 +1,7 @@
 var express         = require("express"),
     app             = express(),
-    bodyParser      = require("body-parser")
+    bodyParser      = require("body-parser"),
+    cors            = require("cors")
     
 var indexRoutes     = require("./routes/index"),
     userlogRoutes   = require("./routes/userlog"),
@@ -10,6 +11,7 @@ var indexRoutes     = require("./routes/index"),
     settingRoutes   = require("./routes/settings");
     
 
+app.use(cors());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
@@ -22,7 +24,7 @@ app.use("/settings", settingRoutes);
 
 //  Start the server
 app.listen(process.env.PORT, process.env.IP, function(){
-   console.log("The ELLE Server Has Started!");
+   console.log("The ELLE Server Has Started on ");
 });
 
 // app.listen(process.env.PORT, '159.203.163.127', function(){
